@@ -1,24 +1,25 @@
-import logo from './logo.svg';
 import './App.css';
+import { useState} from "react";
 
-function App() {
+
+import Login from './login.js';
+import Loading from './loading.js';
+import Homepage from './Homepage';
+
+
+const App = () => {
+  const [login, setLogin] = useState();
+
+  const renderPage = () => {
+    if(login){
+      return <Homepage />
+    }
+    return(<Login login={login} setLogin={setLogin}/>);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+
+    renderPage()
   );
 }
 
