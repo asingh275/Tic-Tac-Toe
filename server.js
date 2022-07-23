@@ -17,3 +17,12 @@ const io = new Server(server, {
         methods: ["GET", "POST"],
     }
 })
+
+io.on("connection", socket => {
+    console.log("new connection")
+    console.log(socket.id)
+})
+
+server.listen(8080, () => {
+    console.log("Server is running...")
+}) 
