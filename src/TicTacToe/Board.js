@@ -4,12 +4,10 @@ import Square from './Square';
 import io from "socket.io-client";
 const socket = io.connect("http://localhost:8080");
 
-
 const Board = () => {
     const [board, setBoard] = useState(["", "", "", "", "", "", "", "", ""]);
-    const [player, setPlayer] = useState("x");
-    const [turn, setTurn] = useState("x");
-    const [initialState, setInitialState] = useState(true);
+    const [player, setPlayer] = useState("");
+    const [turn, setTurn] = useState("");
 
     const selectSquare = (square) => {
         if(turn === player && board[square] === "") {
@@ -20,19 +18,23 @@ const Board = () => {
                 }
                 return value;
             }))
-            setInitialState(false);
         }
     }
-    
+
+    const testFunction = () => {
+        console.log(socket)
+        console.log("player:", player)
+        console.log("turn:", turn)
+    }
+
+    socket.on("game-begin", (event) => {
+        setPlayer(event.symbol);
+        setTurn("x")
+    })
+
     useEffect(() => {
-        if(!initialState) {
-            console.log("hello")
-            socket.emit("game-move", {board, player, turn});
-            // Need to change for other player (different socket)
-            setPlayer(player === "x" ? "o" : "x");
-            setTurn(player === "x" ? "o" : "x");
-        }
-    }, [board])
+        socket.emit("start");
+    }, [])
 
     return (
         <div className="board">
@@ -50,6 +52,9 @@ const Board = () => {
                 <Square value={board[6]} selectSquare={() => selectSquare(6)}></Square>
                 <Square value={board[7]} selectSquare={() => selectSquare(7)}></Square>
                 <Square value={board[8]} selectSquare={() => selectSquare(8)}></Square>
+            </div>
+            <div>
+                <button onClick={testFunction}>testing</button>
             </div>
         </div>
     )

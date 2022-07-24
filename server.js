@@ -18,19 +18,59 @@ const io = new Server(server, {
     }
 })
 
+let players = {};
+let unmatched;
+const joinGame = (socket) => {
+    players[socket.id] = {
+        opponent: unmatched,
+        symbol: "x",
+        socket: socket
+    }
+
+    if(unmatched) {
+        players[socket.id].symbol = "o";
+        players[unmatched].opponent = socket.id;
+        unmatched = null;
+    } else {
+        unmatched = socket.id;
+    }
+}
+
+const getOpponent = (socket) => {
+  if (!players[socket.id].opponent) return;
+
+  return players[players[socket.id].opponent].socket;
+}
+
+
 io.on("connection", socket => {
     console.log("new connection", socket.id)
+    
+    socket.on("start", () => {
+        joinGame(socket);
 
-    socket.broadcast.emit("message", "A user has been connected");
+        if (getOpponent(socket)) {
+        
+            socket.emit("game-begin", {
+                symbol: players[socket.id].symbol
+            });
+            
+            getOpponent(socket).emit("game-begin", {
+                symbol: players[getOpponent(socket).id].symbol
+            });
+
+        }
+    })
+    
 
     socket.on("disconnect", () => {
         io.emit("message", "A user disconnected")
     })
 
-    socket.on("game-move", (event) => {
-        console.log(event)
-        console.log(socket.id)
-    })
+    // socket.on("game-move", (event) => {
+    //     console.log(event)
+    //     console.log(socket.id)
+    // })
 
 })
 
