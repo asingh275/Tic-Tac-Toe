@@ -19,8 +19,19 @@ const io = new Server(server, {
 })
 
 io.on("connection", socket => {
-    console.log("new connection")
-    console.log(socket.id)
+    console.log("new connection", socket.id)
+
+    socket.broadcast.emit("message", "A user has been connected");
+
+    socket.on("disconnect", () => {
+        io.emit("message", "A user disconnected")
+    })
+
+    socket.on("game-move", (event) => {
+        console.log(event)
+        console.log(socket.id)
+    })
+
 })
 
 server.listen(8080, () => {
