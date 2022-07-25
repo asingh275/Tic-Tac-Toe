@@ -20,6 +20,10 @@ const Board = (props) => {
             SetResultMessage(data.message);
         }else if(data.method === "game-over-error"){
             setGameError(data.message);
+        }else if(data.method === "game-reset"){
+            setBoard(data.board);
+            setGameError(undefined);
+            SetResultMessage(undefined);
         }
     });
 
@@ -32,9 +36,16 @@ const Board = (props) => {
         });
     }
 
+    const resetGame = () => {
+        props.socket.emit("message", {
+          method: "reset-game",
+          gameId: props.gameId,
+        });
+      }
+
     return (
         <div className="board">
-            <h2>{resultMessage !== undefined && resultMessage}</h2>
+            {resultMessage !== undefined && <h2>{resultMessage}</h2>}
             <div className="row">
                 <Square value={board[0]} selectSquare={() => selectSquare(0)}></Square>
                 <Square value={board[1]} selectSquare={() => selectSquare(1)}></Square>
@@ -51,6 +62,7 @@ const Board = (props) => {
                 <Square value={board[8]} selectSquare={() => selectSquare(8)}></Square>
             </div>
             {gameError && <h5>{gameError}</h5>}
+            {resultMessage !== undefined && <button onClick={() => resetGame()}>Reset Game</button>}
         </div>
     )
 }

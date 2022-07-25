@@ -81,7 +81,13 @@ io.on("connection", (socket) => {
       matches.push(game);
       socket.emit("message", { method: "game-created", ...game });
     }
-
+    if(message.method == "reset-game"){
+      let game = matches.find(game => game.gameId == message.gameId);
+      game.board = ["", "", "", "", "", "", "", "", ""];
+      game.currentTurn = game.player1;
+      io.to(game.player1Socket).emit("message", { method: "game-reset", ...game });
+      io.to(game.player2Socket).emit("message", { method: "game-reset", ...game });
+    }
     if (message.method === "make-move") {
       let result;
       let indexMatch = matches.findIndex(
