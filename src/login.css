@@ -1,7 +1,16 @@
 #root {
     height: 100vh;
+    
 }
 
 iframe {
     display: block;
+}
+.card {
+    height: 100%;
+}
+
+.container {
+    -webkit-box-shadow: 0px 1px 4px rgb(0 0 0 / 20%), 0px 2px 4px rgb(0 0 0 / 8%), 0px 1px 2px rgb(0 0 0 / 8%);
+    box-shadow: 0px 1px 4px rgb(0 0 0 / 20%), 0px 2px 4px rgb(0 0 0 / 8%), 0px 1px 2px rgb(0 0 0 / 8%);
 }
