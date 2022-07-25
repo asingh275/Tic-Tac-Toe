@@ -16,7 +16,6 @@ const Login = (props) =>{
 
     const onSuccess = (res) => {
         props.setLogin(parseJwt(res.credential));
-        console.log((parseJwt(res.credential)));
     }
 
     const onFailure = (res)  => {
