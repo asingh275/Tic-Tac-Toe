@@ -9,7 +9,6 @@ const Homepage = (props) => {
   const [gameIdForm, setGameFormId] = useState(null);
   const user= props.login;
   const [errorMessage, setErrorMessage] = useState(undefined);
-  console.log(user);
   const createGame = () => {
     socket.emit("message", {
       method: "create-game",
