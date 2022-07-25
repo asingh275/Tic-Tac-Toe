@@ -6,15 +6,19 @@ import Square from './Square';
 const Board = (props) => {
     const [board, setBoard] = useState(["", "", "", "", "", "", "", "", ""]);
     const [gameError, setGameError] = useState(undefined);
+    const [resultMessage, SetResultMessage] = useState(undefined);
 
     props.socket.on("message", (data) => {
         if(data.method === "move-made"){
-            console.log(data);
             setBoard(data.board);
             setGameError(undefined);
         }else if(data.method === "invalid-turn"){
             setGameError(data.message);
         }else if(data.method === "invalid-position"){
+            setGameError(data.message);
+        }else if(data.method === "game-over"){
+            SetResultMessage(data.message);
+        }else if(data.method === "game-over-error"){
             setGameError(data.message);
         }
     });
@@ -30,6 +34,7 @@ const Board = (props) => {
 
     return (
         <div className="board">
+            <h2>{resultMessage !== undefined && resultMessage}</h2>
             <div className="row">
                 <Square value={board[0]} selectSquare={() => selectSquare(0)}></Square>
                 <Square value={board[1]} selectSquare={() => selectSquare(1)}></Square>
