@@ -1,5 +1,6 @@
 import React from "react";
 import { GoogleLogin } from "@react-oauth/google";
+import './login.css'
 
 const Login = (props) =>{
 
@@ -22,12 +23,57 @@ const Login = (props) =>{
         console.log('[Login failed] res: ', res);
     }
     return (
-        <div>
-            <GoogleLogin
-                onSuccess={onSuccess}
-                onError={onFailure}
-            />
-        </div>
+        <>
+            <div className="px-4 py-5 text-center h-100">
+                <div className="container shadow rounded mt-5">
+                    <div className="row  ">
+                        <div className="col md-6 p-0 text-start">
+                           <div className="card left bg-dark">
+                                <div className="card-body px-4 py-5 text-white">
+                                    <h1>App title</h1>
+                                    <h3>Subheader</h3>
+                                    <p className="mb-0">Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                                    olestias laudantium exercitationem quam illum earum totam,
+                                    commodi a alias, distinctio adiasdasdaasdasdpisci dolore tempora. Aperiam,
+                                    laborum eius expedita maxime unde laboriosaasdasdasdasdasdasdasdasdm reprehenderit.</p>
+                                </div>
+                                
+                          </div>
+                            
+                        </div>
+                        <div className="col md-6 p-0">
+                            <div className="card right">
+                                <div className="card-body px-4 py-5">
+                                    <div className="row px-4 text-start">
+                                        <h3>Welcome</h3>
+                                    </div>
+                                    <div className="row px-4 mb-3 text-start">
+                                        <p className="lead">Log in to continue</p>
+                                    </div>
+
+                                    
+
+                                    <div className="row px-2 ms-1 mt-3 google-login">
+                                        <GoogleLogin
+                                            onSuccess={onSuccess}
+                                            onError={onFailure}
+                                            size={"large"}
+                                            width={400}
+                                            theme={"filled_black"}
+                                            
+                                         />
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </>
+        
     );
 };
 
