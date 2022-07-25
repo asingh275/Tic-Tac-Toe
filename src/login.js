@@ -54,7 +54,7 @@ const Login = (props) =>{
 
                                     
 
-                                    <div className="row px-2 mt-3 google-login">
+                                    <div className="row px-2 ms-1 mt-3 google-login">
                                         <GoogleLogin
                                             onSuccess={onSuccess}
                                             onError={onFailure}
