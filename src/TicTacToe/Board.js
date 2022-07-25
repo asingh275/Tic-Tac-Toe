@@ -1,40 +1,32 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Square from './Square';
 // Creating socket and connecting for testing
-import io from "socket.io-client";
-const socket = io.connect("http://localhost:8080");
 
-const Board = () => {
+
+const Board = (props) => {
     const [board, setBoard] = useState(["", "", "", "", "", "", "", "", ""]);
-    const [player, setPlayer] = useState("");
-    const [turn, setTurn] = useState("");
+    const [gameError, setGameError] = useState(undefined);
+
+    props.socket.on("message", (data) => {
+        if(data.method === "move-made"){
+            console.log(data);
+            setBoard(data.board);
+            setGameError(undefined);
+        }else if(data.method === "invalid-turn"){
+            setGameError(data.message);
+        }else if(data.method === "invalid-position"){
+            setGameError(data.message);
+        }
+    });
 
     const selectSquare = (square) => {
-        if(turn === player && board[square] === "") {
-            setTurn(player === "x" ? "o" : "x");
-            setBoard(board.map((value, index) => {
-                if(index === square && value === "") {
-                    return player;
-                }
-                return value;
-            }))
-        }
+        props.socket.emit("message", {
+            method: "make-move",
+            gameId: props.gameId,
+            userID: props.user.sub,
+            position: square
+        });
     }
-
-    const testFunction = () => {
-        console.log(socket)
-        console.log("player:", player)
-        console.log("turn:", turn)
-    }
-
-    socket.on("game-begin", (event) => {
-        setPlayer(event.symbol);
-        setTurn("x")
-    })
-
-    useEffect(() => {
-        socket.emit("start");
-    }, [])
 
     return (
         <div className="board">
@@ -53,9 +45,7 @@ const Board = () => {
                 <Square value={board[7]} selectSquare={() => selectSquare(7)}></Square>
                 <Square value={board[8]} selectSquare={() => selectSquare(8)}></Square>
             </div>
-            <div>
-                <button onClick={testFunction}>testing</button>
-            </div>
+            {gameError && <h5>{gameError}</h5>}
         </div>
     )
 }

@@ -1,4 +1,5 @@
 import './App.css';
+import React from 'react';
 import { useState} from "react";
 
 
@@ -12,7 +13,7 @@ const App = () => {
 
   const renderPage = () => {
     if(login){
-      return <Homepage />
+      return <Homepage login={login} />
     }
     return(<Login login={login} setLogin={setLogin}/>);
   }
