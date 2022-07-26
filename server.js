@@ -70,13 +70,16 @@ io.on("connection", (socket) => {
         gameId: new Date().valueOf(),
         createdBy: message.userID,
         player1: message.userID,
+        player1Name: message.userName,
         player2: undefined,
+        player2Name: undefined,
         player1Socket: socket.id,
         player2Socket: undefined,
         player1Symbol: "x",
         player2Symbol: "o",
         board: ["", "", "", "", "", "", "", "", ""],
         currentTurn: message.userID,
+        historyChat: []
       };
       matches.push(game);
       socket.emit("message", { method: "game-created", ...game });
@@ -223,6 +226,7 @@ io.on("connection", (socket) => {
         }
       } else if (matches[indexMatch].player2 === undefined) {
         matches[indexMatch].player2 = message.userID;
+        matches[indexMatch].player2Name = message.userName;
         matches[indexMatch].player2Socket = socket.id;
         matches[indexMatch].player2Symbol = "o";
         socket.emit("message", {
@@ -232,6 +236,19 @@ io.on("connection", (socket) => {
       }
     }
   });
+
+  socket.on("message-chat", (message) => {
+    if(message.method == "send-message"){
+      let indexMatch = matches.findIndex(
+        (match) => match.gameId == message.gameId
+      );
+      let { historyChat, player1Socket, player2Socket } = matches[indexMatch];
+      delete message.method;
+      historyChat.push(message);
+      io.to(player1Socket).emit("message-chat", { method: "update-chat" , historyChat});
+      io.to(player2Socket).emit("message-chat", { method: "update-chat" , historyChat});
+    }
+  })
 
   socket.on("disconnect", () => {
     io.emit("message", "A user disconnected");
