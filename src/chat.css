@@ -1,0 +1,4 @@
+.chat-message {
+    word-wrap: break-word;
+    max-width: 18rem;
+}

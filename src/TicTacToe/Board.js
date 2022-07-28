@@ -44,7 +44,7 @@ const Board = (props) => {
       }
 
     return (
-        <div className="board">
+        <div className="board mt-4 shadow">
             {resultMessage !== undefined && <h2>{resultMessage}</h2>}
             <div className="row">
                 <Square value={board[0]} selectSquare={() => selectSquare(0)}></Square>
@@ -62,7 +62,7 @@ const Board = (props) => {
                 <Square value={board[8]} selectSquare={() => selectSquare(8)}></Square>
             </div>
             {gameError && <h5>{gameError}</h5>}
-            {resultMessage !== undefined && <button onClick={() => resetGame()}>Reset Game</button>}
+            {resultMessage !== undefined && <button className="btn btn-dark my-3" onClick={() => resetGame()}>Reset Game</button>}
         </div>
     )
 }
