@@ -2,6 +2,7 @@ import React from "react";
 import TicTacToe from "./TicTacToe/TicTacToe";
 import { useState, useEffect } from "react";
 import io from "socket.io-client";
+import './chat.css'
 
 const Homepage = (props) => {
   const [socket, setSocket] = useState(null);
@@ -111,18 +112,18 @@ const Homepage = (props) => {
       )}
       {errorMessage !== undefined && <h4>{errorMessage}</h4>}
       {gameId !== null && (
-        <div className="d-flex flex-column p-2 flex-grow-1 text-center ">
+        <div className="d-flex flex-column p-2 flex-grow-1 text-center">
           <TicTacToe user={user} socket={socket} gameId={gameId}></TicTacToe>
-          <h3>Game ID: {gameId}</h3>
+          <h3 className="mt-3">Game ID: {gameId}</h3>
         </div>
       )}
       {gameId !== null && (
-        <div className="p-2 d-flex align-items-end h-100 shadow mb-3">
+        <div className="p-2 d-flex align-items-end mw-50 shadow bg-dark text-white">
           <div>
-              <div className="chat-box overflow-auto">
+              <div className="chat-box h-100 mb-1 overflow-auto w-100 p-2">
             {historyChat.map((chat, index) => {
               return (
-                <div className="chat-message" key={'chat-message' + index}>
+                <div className="chat-message mb-2 bg-secondary bg-gradient rounded p-1" key={'chat-message' + index}>
                   <span className="chat-message-date">[{new Date(chat.date).toLocaleTimeString()}] </span>
                   <span className="chat-message-user">{chat.userName}: </span>
                   <span className="chat-message-content">{chat.messageContent}</span>
@@ -130,15 +131,17 @@ const Homepage = (props) => {
               );
             })}
             </div>
-            <form onSubmit={(e) => sendMessage(e)}>
-              <input
-                type="text"
-                value={chatMessage}
-                onChange={(e) => setChatMessage(e)}
-                className="lh-base"
-              />
-              <input className="btn btn-dark ms-2 lh-base" name="submitmsg" type="submit" id="submitmsg" value="Send" />
-            </form>
+            <div className="p-1">
+                <form onSubmit={(e) => sendMessage(e)}>
+                  <input
+                    type="text"
+                    value={chatMessage}
+                    onChange={(e) => setChatMessage(e)}
+                  />
+                  <input className="btn btn-primary ms-2" name="submitmsg" type="submit" id="submitmsg" value="Send" />
+                </form> 
+            </div>
+                           
           </div>
           
         </div>

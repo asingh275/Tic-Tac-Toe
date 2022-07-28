@@ -28,6 +28,7 @@ const Login = (props) =>{
 
     const signInWithGithub = () => {
         signInWithPopup(auth, provider).then(result => {
+            console.log(result.user)
             props.setLogin(result.user)
         }).catch(error => {
             console.log(error)
