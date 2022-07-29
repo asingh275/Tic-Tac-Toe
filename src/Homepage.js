@@ -89,47 +89,59 @@ const Homepage = (props) => {
 
   return (
     <div className="w-100 h-100 m-0 p-0 homepage">
-      <div className="container shadow rounded pb-5 bg-light ">
-        <div className="col w-100 h-100">
+      <div className="container">
+        <div className="row">
 
-          <div className="row text-center mt-5">
-            <h1 className="mt-10"><span className="badge bg-warning text-dark">{user.displayName}'s Game</span></h1>
+          <div className="col-8">
+            <div className="container shadow rounded pb-5 bg-light">
+              <div className="col w-80 h-100">
+
+                <div className="row text-center mt-5">
+                  <h1 className="mt-10"><span className="badge bg-warning text-dark">{user.displayName}'s Game</span></h1>
+                </div>
+                <div className="row bg-light d-flex flex-row pt-5">
+                  {gameId == null && (
+                    <div className="container">
+                      <form
+                        onSubmit={(e) => {
+                          joinGame(e);
+                        }}
+                      >
+                        <input
+                          type="text"
+                          onChange={(e) => setGameFormId(e.target.value)}
+                        />
+
+                        <button className="ms-3 btn btn-dark" type="submit">Join Game</button>
+
+
+                      </form>
+                      <div className="mt-4">
+                        <button className="btn btn-dark" onClick={() => createGame()}>Create Game</button>
+                      </div>
+
+                    </div>
+                  )}
+                  {errorMessage !== undefined && <h4>{errorMessage}</h4>}
+                  {gameId !== null && (
+                    <div className="d-flex flex-column p-2 flex-grow-1 text-center">
+                      <TicTacToe user={user} socket={socket} gameId={gameId}></TicTacToe>
+                      <h2><span className="badge bg-dark">Game ID: {gameId}</span></h2>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+            </div>
+
           </div>
 
-          <div className="row bg-light d-flex flex-row pt-5">
-            {gameId == null && (
-              <div className="container">
-                <form
-                  onSubmit={(e) => {
-                    joinGame(e);
-                  }}
-                >
-                  <input
-                    type="text"
-                    onChange={(e) => setGameFormId(e.target.value)}
-                  />
 
-                  <button className="ms-3 btn btn-dark" type="submit">Join Game</button>
-
-
-                </form>
-                <div className="mt-4">
-                  <button className="btn btn-dark" onClick={() => createGame()}>Create Game</button>
-                </div>
-
-              </div>
-            )}
-            {errorMessage !== undefined && <h4>{errorMessage}</h4>}
+          <div className="col-4 h-100">
             {gameId !== null && (
-              <div className="d-flex flex-column p-2 flex-grow-1 text-center">
-                <TicTacToe user={user} socket={socket} gameId={gameId}></TicTacToe>
-                <h2><span className="badge bg-dark">Game ID: {gameId}</span></h2>
-              </div>
-            )}
-            {gameId !== null && (
-              <div className="p-2 d-flex align-items-end mw-50 shadow bg-light text-dark">
+              <div className="p-2 d-flex align-items-end mw-50 shadow bg-dark text-light chat-box">
                 <div>
-                  <div className="chat-box h-100 mb-1 overflow-auto w-100 p-2">
+                  <div className="h-100 mb-1 overflow-auto w-100 p-2">
                     {historyChat.map((chat, index) => {
                       return (
                         <div className="chat-message mb-2 bg-secondary bg-gradient rounded p-1" key={'chat-message' + index}>
@@ -156,9 +168,9 @@ const Homepage = (props) => {
               </div>
             )}
           </div>
+
         </div>
       </div>
-
     </div>
   );
 };

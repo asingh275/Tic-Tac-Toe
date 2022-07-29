@@ -3,8 +3,12 @@
     max-width: 18rem;
 }
 
+.chat-box {
+    width: auto;
+}
+
 .homepage {
     background-image: url("https://cdn.dribbble.com/users/3474264/screenshots/11222954/media/238ffe693cece80e5add668b12937b85.png");
     background-repeat: no-repeat;
-    background-size: auto;
+    background-size: cover;
 }

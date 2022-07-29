@@ -22,17 +22,26 @@
 }
 
 .square {
-    color: black;
+    color: white;
     width: 8rem;
     height: 8rem;
     font-size: 5rem;
     text-align: center;
-    background-color: white;
-    border: 1px solid lightslategrey;
+    background-color: rgb(39, 92, 72);
+    border-bottom: 5px solid white;
+    border-right: 5px solid white;
     transition: background-color 0.15s;
 }
 
 .square:hover {
     background-color: rgb(117, 115, 115);
     
+}
+
+.square:nth-child(3n){
+    border-right: 0px;
+}
+
+.square:last-child(){
+    border-bottom: 0px;
 }
