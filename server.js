@@ -3,12 +3,16 @@ const app = express();
 const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
+const router = require("./routes/index.js");
 
 app.set("port", process.env.PORT || 3000);
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
+app.use('/api/v1/', router, (req, res) =>{
+
+});
 
 const server = http.createServer();
 
