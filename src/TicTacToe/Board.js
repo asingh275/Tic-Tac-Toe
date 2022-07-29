@@ -7,23 +7,31 @@ const Board = (props) => {
     const [board, setBoard] = useState(["", "", "", "", "", "", "", "", ""]);
     const [gameError, setGameError] = useState(undefined);
     const [resultMessage, SetResultMessage] = useState(undefined);
+    const [player1Score, SetPlayer1Score] = useState(0);
+    const [player2Score, SetPlayer2Score] = useState(0);
 
     props.socket.on("message", (data) => {
         if(data.method === "move-made"){
             setBoard(data.board);
             setGameError(undefined);
+            SetPlayer1Score(data.player1Score);
+            SetPlayer2Score(data.player2Score);
         }else if(data.method === "invalid-turn"){
             setGameError(data.message);
         }else if(data.method === "invalid-position"){
             setGameError(data.message);
         }else if(data.method === "game-over"){
             SetResultMessage(data.message);
+            SetPlayer1Score(data.player1Score);
+            SetPlayer2Score(data.player2Score);
         }else if(data.method === "game-over-error"){
             setGameError(data.message);
         }else if(data.method === "game-reset"){
             setBoard(data.board);
             setGameError(undefined);
             SetResultMessage(undefined);
+            SetPlayer1Score(data.player1Score);
+            SetPlayer2Score(data.player2Score);
         }
     });
 
@@ -63,6 +71,10 @@ const Board = (props) => {
             </div>
             {gameError && <h5>{gameError}</h5>}
             {resultMessage !== undefined && <button className="btn btn-dark my-3" onClick={() => resetGame()}>Reset Game</button>}
+            <div>
+                <h4>Score: </h4>
+                <h5>Player 1: {player1Score} - Player 2: {player2Score}</h5>
+            </div>
         </div>
     )
 }
