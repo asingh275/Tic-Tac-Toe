@@ -66,6 +66,7 @@ io.on("connection", (socket) => {
   console.log("New connection " + socket.id)
   socket.on("message", (message) => {
     if (message.method === "create-game") {
+      console.log(socket.id);
       let game = {
         gameId: new Date().valueOf(),
         createdBy: message.userID,

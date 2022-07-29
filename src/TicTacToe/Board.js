@@ -31,7 +31,7 @@ const Board = (props) => {
         props.socket.emit("message", {
             method: "make-move",
             gameId: props.gameId,
-            userID: props.user.sub,
+            userID: props.user.uid,
             position: square
         });
     }

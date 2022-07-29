@@ -16,8 +16,8 @@ const Homepage = (props) => {
   const createGame = () => {
     socket.emit("message", {
       method: "create-game",
-      userID: user.sub,
-      userName: user.name,
+      userID: user.uid,
+      userName: user.displayName,
     });
   };
 
@@ -25,8 +25,8 @@ const Homepage = (props) => {
     e.preventDefault(e);
     socket.emit("message", {
       method: "join-game",
-      userID: user.sub,
-      userName: user.name,
+      userID: user.uid,
+      userName: user.displayName,
       gameId: gameIdForm,
     });
   };
@@ -35,8 +35,8 @@ const Homepage = (props) => {
     e.preventDefault(e);
     socket.emit("message-chat", {
       method: "send-message",
-      userID: user.sub,
-      userName: user.name,
+      userID: user.uid,
+      userName: user.displayName,
       gameId: gameId,
       messageContent: chatMessage,
       date: new Date(),
