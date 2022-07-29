@@ -1,7 +1,6 @@
 import React from 'react';
 import { useState} from "react";
 import Login from './login.js';
-import Loading from './loading.js';
 import Homepage from './Homepage';
 import './App.css';
 
