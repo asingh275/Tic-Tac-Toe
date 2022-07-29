@@ -5,35 +5,31 @@ const { Server } = require("socket.io");
 const cors = require("cors");
 const router = require("./routes/index.js");
 
-app.set("port", process.env.PORT || 3000);
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
-app.use('/api/v1/', router, (req, res) =>{
+app.use("/api/v1/", router, (req, res) => {});
 
+app.get("/", (req, res) => {
+  res.send("Hello World");
 });
 
-app.listen(app.settings.port, () =>
-  console.log("Listening on", app.settings.port)
-);
+
+// app.listen(app.settings.port, () => {
+//   console.log("Listening on", app.settings.port);
+// });
 const server = http.createServer(app);
 
-
-// server.listen(app.settings.port, () => {
-//   console.log("Server started on port " + server.address().port);
-// });
-
-const io = new Server(server, {
+const io = new Server(server
+  , 
+  {
   cors: {
-    origin: `https://cpsc2650-tic-tac-toe.herokuapp.com/:${app.settings.port}`,
+    origin: `http://localhost/:${process.env.PORT}`,
     methods: ["GET", "POST"],
   },
-});
-
-app.use("/", (req, res) => {
-  res.send('');
-});
+}
+);
 
 const makeMove = (board, symbol, position) => {
   if (board[position] === "") {
@@ -57,22 +53,18 @@ const checkWin = (board) => {
   ];
   for (let i = 0; i < winningCombinations.length; i++) {
     const [a, b, c] = winningCombinations[i];
-    if (
-      board[a] !== "" &&
-      board[a] === board[b] &&
-      board[a] === board[c]
-    ) {
+    if (board[a] !== "" && board[a] === board[b] && board[a] === board[c]) {
       return board[a];
     }
   }
   return "";
-}
+};
 
 let matches = [];
 
 io.on("connection", (socket) => {
+  console.log("New connection " + socket.id)
   socket.on("message", (message) => {
-
     if (message.method === "create-game") {
       let game = {
         gameId: new Date().valueOf(),
@@ -87,17 +79,23 @@ io.on("connection", (socket) => {
         player2Symbol: "o",
         board: ["", "", "", "", "", "", "", "", ""],
         currentTurn: message.userID,
-        historyChat: []
+        historyChat: [],
       };
       matches.push(game);
       socket.emit("message", { method: "game-created", ...game });
     }
-    if(message.method == "reset-game"){
-      let game = matches.find(game => game.gameId == message.gameId);
+    if (message.method == "reset-game") {
+      let game = matches.find((game) => game.gameId == message.gameId);
       game.board = ["", "", "", "", "", "", "", "", ""];
       game.currentTurn = game.player1;
-      io.to(game.player1Socket).emit("message", { method: "game-reset", ...game });
-      io.to(game.player2Socket).emit("message", { method: "game-reset", ...game });
+      io.to(game.player1Socket).emit("message", {
+        method: "game-reset",
+        ...game,
+      });
+      io.to(game.player2Socket).emit("message", {
+        method: "game-reset",
+        ...game,
+      });
     }
     if (message.method === "make-move") {
       let result;
@@ -133,10 +131,10 @@ io.on("connection", (socket) => {
             message: result,
             board,
           });
-          if(checkWin(board) !== ""){
+          if (checkWin(board) !== "") {
             let winnerMessage = "You win!";
             let loserMessage = "You lose!";
-            if(checkWin(board) === player1Symbol){
+            if (checkWin(board) === player1Symbol) {
               io.to(player1Socket).emit("message", {
                 method: "game-over",
                 message: winnerMessage,
@@ -145,7 +143,7 @@ io.on("connection", (socket) => {
                 method: "game-over",
                 message: loserMessage,
               });
-            }else{
+            } else {
               io.to(player1Socket).emit("message", {
                 method: "game-over",
                 message: loserMessage,
@@ -173,13 +171,12 @@ io.on("connection", (socket) => {
           }
         }
       } else if (currentTurn !== message.userID) {
-        if(currentTurn === "over"){
+        if (currentTurn === "over") {
           socket.emit("message", {
             method: "game-over-error",
             message: "Game is over",
           });
-        }
-        else if (message.userID === player1) {
+        } else if (message.userID === player1) {
           io.to(player1Socket).emit("message", {
             method: "invalid-turn",
             message: "It's not your turn",
@@ -209,28 +206,28 @@ io.on("connection", (socket) => {
         matches[indexMatch].player1 !== undefined
       ) {
         if (
-            matches[indexMatch].player2 === message.userID ||
-            matches[indexMatch].player1 === message.userID
-          ) {
-            if(matches[indexMatch].player2 === message.userID){
-                matches[indexMatch].player2Socket = socket.id;
-            }else{
-                matches[indexMatch].player1Socket = socket.id;
-            }
-            socket.emit("message", {
-                method: "game-joined",
-                gameId: message.gameId,
-            });
-            socket.emit("message", {
-                method: "move-made",
-                message: "Update",
-                board: matches[indexMatch].board,
-              });
-        }else{
-            socket.emit("message", {
-                method: "match-full",
-                errorMessage: "Match is full",
-              });
+          matches[indexMatch].player2 === message.userID ||
+          matches[indexMatch].player1 === message.userID
+        ) {
+          if (matches[indexMatch].player2 === message.userID) {
+            matches[indexMatch].player2Socket = socket.id;
+          } else {
+            matches[indexMatch].player1Socket = socket.id;
+          }
+          socket.emit("message", {
+            method: "game-joined",
+            gameId: message.gameId,
+          });
+          socket.emit("message", {
+            method: "move-made",
+            message: "Update",
+            board: matches[indexMatch].board,
+          });
+        } else {
+          socket.emit("message", {
+            method: "match-full",
+            errorMessage: "Match is full",
+          });
         }
       } else if (matches[indexMatch].player2 === undefined) {
         matches[indexMatch].player2 = message.userID;
@@ -246,20 +243,30 @@ io.on("connection", (socket) => {
   });
 
   socket.on("message-chat", (message) => {
-    if(message.method == "send-message"){
+    if (message.method == "send-message") {
       let indexMatch = matches.findIndex(
         (match) => match.gameId == message.gameId
       );
       let { historyChat, player1Socket, player2Socket } = matches[indexMatch];
       delete message.method;
       historyChat.push(message);
-      io.to(player1Socket).emit("message-chat", { method: "update-chat" , historyChat});
-      io.to(player2Socket).emit("message-chat", { method: "update-chat" , historyChat});
+      io.to(player1Socket).emit("message-chat", {
+        method: "update-chat",
+        historyChat,
+      });
+      io.to(player2Socket).emit("message-chat", {
+        method: "update-chat",
+        historyChat,
+      });
     }
-  })
+  });
 
   socket.on("disconnect", () => {
     io.emit("message", "A user disconnected");
   });
+});
 
+
+server.listen(process.env.PORT, () => {
+  console.log("Server started on port " + server.address().port);
 });
