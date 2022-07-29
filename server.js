@@ -20,11 +20,11 @@ app.listen(app.settings.port, () =>
   console.log("Listening on", app.settings.port)
 );
 
-server.listen(app.settings.port, () => {
-  console.log("Server started on port " + server.address().port);
-});
+// server.listen(app.settings.port, () => {
+//   console.log("Server started on port " + server.address().port);
+// });
 
-const io = new Server(server, {
+const io = new Server(app, {
   cors: {
     origin: `https://cpsc2650-tic-tac-toe.herokuapp.com/:${app.settings.port}`,
     methods: ["GET", "POST"],
