@@ -1,6 +1,8 @@
 #root {
     height: 100vh;
-    
+    background-image: url("https://cdn.dribbble.com/users/4870/screenshots/13934993/media/fe1d61483a80e5269a854e46c269f350.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 iframe {
