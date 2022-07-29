@@ -14,17 +14,17 @@ app.use('/api/v1/', router, (req, res) =>{
 
 });
 
-const server = http.createServer();
-
 app.listen(app.settings.port, () =>
   console.log("Listening on", app.settings.port)
 );
+const server = http.createServer(app);
+
 
 // server.listen(app.settings.port, () => {
 //   console.log("Server started on port " + server.address().port);
 // });
 
-const io = new Server(app, {
+const io = new Server(server, {
   cors: {
     origin: `https://cpsc2650-tic-tac-toe.herokuapp.com/:${app.settings.port}`,
     methods: ["GET", "POST"],
