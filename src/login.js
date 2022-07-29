@@ -1,8 +1,8 @@
 import React from "react";
 import { GoogleLogin } from "@react-oauth/google";
-import './login.css'
 import { auth, provider } from './Github-auth/Firebase';
 import { signInWithPopup } from "firebase/auth";
+import './login.css'
 
 const Login = (props) =>{
 

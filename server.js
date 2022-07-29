@@ -12,19 +12,23 @@ app.use(cors());
 
 const server = http.createServer();
 
-// app.listen(app.settings.port, () =>
-//   console.log("Listening on", app.settings.port)
-// );
+app.listen(app.settings.port, () =>
+  console.log("Listening on", app.settings.port)
+);
 
-server.listen(3001, () => {
+server.listen(app.settings.port + 1, () => {
   console.log("Server started on port " + server.address().port);
 });
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: `http://localhost:${app.settings.port + 1}`,
     methods: ["GET", "POST"],
   },
+});
+
+app.use("/", (req, res) => {
+  res.send('');
 });
 
 const makeMove = (board, symbol, position) => {
@@ -255,5 +259,3 @@ io.on("connection", (socket) => {
   });
 
 });
-
-app.use("/", (req, res) => {});
