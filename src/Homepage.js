@@ -51,7 +51,7 @@ const Homepage = (props) => {
 
   useEffect(() => {
     if(socket === null){
-      setSocket(io("http://localhost:3001"));
+      setSocket(io(`https://cpsc2650-tic-tac-toe.herokuapp.com/${process.env.PORT}`));
     }
     if(socket){
       socket.on("message", (data) => {
