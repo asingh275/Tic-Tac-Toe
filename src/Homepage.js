@@ -2,7 +2,7 @@ import React from "react";
 import TicTacToe from "./TicTacToe/TicTacToe";
 import { useState, useEffect } from "react";
 import io from "socket.io-client";
-import UserInfo from "./UserInfo";
+import GameHeader from "./GameHeader";
 import './chat.css'
 import axios from "axios";
 
@@ -20,6 +20,8 @@ const Homepage = (props) => {
   </>);
   const [emailToShare, setEmailToShare] = useState("");
   const user = props.login;
+  const [resultMessage, setResultMessage] = useState(undefined)
+
 
   const createGame = () => {
     socket.emit("message", {
@@ -138,92 +140,95 @@ const Homepage = (props) => {
 
 
   const showHeading = (other) => {
-    if (other != null) {
-      setHeading(
-        <>
-          <UserInfo user={user} />
-          <div className="text-center rounded bg-danger me-3 fs-3 text-light">
-            VS
-          </div>
-          <UserInfo user={other} />
-        </>
-      )
-    } else {
-      setHeading(
-        <>
-          <UserInfo user={user} />
-          <div className="text-center rounded bg-danger me-3 fs-3 text-light">
-            VS
-          </div>
-          <UserInfo />
-        </>
-      )
-    }
+    setHeading(<GameHeader user={user} other={other} resultMessage={resultMessage} resetGame={resetGame}></GameHeader>)
   }
+
+  const resetGame = () => {
+    socket.emit("message", {
+      method: "reset-game",
+      gameId: gameId,
+    });
+  };
+
+  useEffect(() => {
+    showHeading(otherUser);
+  }, [resultMessage])
 
 return (
   <div className="vh-100 vw-100 m-0 p-0 homepage">
       
-      <div className="container d-flex flex-row">  
-          {gameId !== null && (
-            <div className="shadow rounded d-flex flex-column justify-content-center">
-              {heading}
-            </div>
-          )}        
-              <div className="bg-light p-3 mt-5 rounded">
-                {gameId == null && (
-                  <div className="container text-start p-5">
-                    <div className="row">
-                        <div className="col-md-12 mb-1">
-                          <h2>Create or join a room to start playing</h2>
-                        </div>
+      <div className="container d-flex flex-row">
+        <div className="row mx-4 align-items-center">
+        {gameId == null && (
+          <div className="bg-light p-3 mt-5 rounded">
+              <div className="container text-start p-5">
+                <div className="row">
+                    <div className="col-md-12 mb-1">
+                      <h2>Create or join a room to start playing</h2>
                     </div>
-                    <div className="row">
-                        <div className="col-md-12 mb-4">
-                          <h3>
-                              <small className="text-muted">Invite a friend over to a challenge!</small>
-                          </h3>
-                          
-                        </div>
-                    </div>
-                    <div className="row">
-
-                    
-                        <form
-                            onSubmit={(e) => {
-                              joinGame(e);
-                            }}
-                          >
-                            <div className="col-md-12">
-                              <div className="input-group">
-                                  <input
-                                    type="text"
-                                    onChange={(e) => setGameFormId(e.target.value)}
-                                    className="form-control"
-                                    placeholder="Insert Game ID here"
-                                  />
-                                  <button className="btn btn-dark" type="submit">Join Game</button>
-                              </div>
-                                
-                            </div>
-                        </form>
+                </div>
+                <div className="row">
+                    <div className="col-md-12 mb-4">
+                      <h3>
+                          <small className="text-muted">Invite a friend over to a challenge!</small>
+                      </h3>
                       
                     </div>
-                  <div className="row">
-                    <div className="col-md-12">
+                </div>
+                <div className="row">
 
-                    
-                      <div className="mt-2">
-                        <button className="btn btn-dark" onClick={() => createGame()}>Create Game</button>
-                      </div>
-                    </div>
+                
+                    <form
+                        onSubmit={(e) => {
+                          joinGame(e);
+                        }}
+                      >
+                        <div className="col-md-12">
+                          <div className="input-group">
+                              <input
+                                type="text"
+                                onChange={(e) => setGameFormId(e.target.value)}
+                                className="form-control"
+                                placeholder="Insert Game ID here"
+                              />
+                              <button className="btn btn-dark" type="submit">Join Game</button>
+                          </div>
+                            
+                        </div>
+                    </form>
+                  
+                </div>
+              <div className="row">
+                <div className="col-md-12">
+
+                
+                  <div className="mt-2">
+                    <button className="btn btn-dark" onClick={() => createGame()}>Create Game</button>
                   </div>
                 </div>
-                )}
+              </div>
+            </div>
+          </div>
+        )}
+          
+          {gameId !== null && (
+          
+            <div className="col-lg-4 col-md-12 align-self-center mt-4">
+                <div className="rounded d-flex flex-column">
+                  {heading}
+                </div>
+            </div>
+          
+          )}
+              
+          
+            
+
                 {errorMessage !== undefined && <h4>{errorMessage}</h4>}
                 {gameId !== null && (
-                  <div className="d-flex flex-column p-2 flex-grow-1 text-center">
-                    <TicTacToe user={user} socket={socket} gameId={gameId} setEmailMessage={setEmailMessage}></TicTacToe>
+                
+                  <div className="col-lg-5 col-md-12 bg-light p-3 mt-5 rounded text-center">
+                    <TicTacToe user={user} socket={socket} gameId={gameId} setEmailMessage={setEmailMessage} setResultMessage={setResultMessage}></TicTacToe>
                     <h2><span className="badge bg-dark">Game ID: {gameId}</span></h2>
                     <button onClick={(e) => leaveGame(e)} className="btn btn-dark mt-3">Leave Game</button>
                     <form onSubmit={(e) => shareGameId(e)} className="mt-2">
@@ -238,18 +243,19 @@ return (
                          <button className="btn btn-success" name="submitmsg" type="submit" id="submitmsg" >Share Game ID</button>
                       </div>
                       {emailMessage !== undefined && <b><i><p>{emailMessage}</p></i></b>}                 
-                  </form>  
-                  </div>
-                  
+                    </form>  
+                    </div>
+                 
                 )}
-              </div>      
+           
 
 
         
           {gameId !== null && (
-            <div className="d-flex flex-column align-items-end shadow bg-dark text-light rounded justify-content-center mt-3">
-              
-                <div className="chat p-3 d-flex flex-column overflow-auto">
+          <div className="col-lg-3 col-md-12 col-sm-12 mt-md-0 mt-lg-5 mx-auto mb-4">
+
+              <div className="row align-items-end bg-dark shadow text-light rounded">
+                <div className="chat p-3 col overflow-auto">
                   {historyChat.map((chat, index) => {
                     return (
                       <div className="chat-message mb-2 bg-secondary bg-gradient rounded p-1" key={'chat-message' + index}>
@@ -271,12 +277,13 @@ return (
                          <button className="btn btn-success" name="submitmsg" type="submit" id="submitmsg"> Send </button>
                       </div>                      
                   </form>             
-            </div>
+                  </div>
+           </div>
           )}
-
+        </div>
       </div>
-  
   </div>
 );
 };
-      export default Homepage;
+
+export default Homepage;

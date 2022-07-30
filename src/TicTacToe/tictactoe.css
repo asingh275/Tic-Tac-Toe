@@ -45,3 +45,27 @@
 .square:last-child(){
     border-bottom: 0px;
 }
+
+@media only screen and (max-width: 1200px) {
+  .square {
+    width: 6.5rem;
+    height: 6.5rem;
+    font-size: 4.5rem;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .square {
+    width: 6rem;
+    height: 6rem;
+    font-size: 4.2rem;
+  }
+}
+
+@media only screen and (max-width: 420px) {
+  .square {
+    width: 5rem;
+    height: 5rem;
+    font-size: 3.5rem;
+  }
+}
