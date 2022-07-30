@@ -14,8 +14,21 @@ https://cpsc2650-tic-tac-toe.herokuapp.com/
 
 # Documentation
 
-- [Tic Tac Toe App]
-- [Tic Tac Toe API]
+- [Tic Tac Toe App Server Side](#tic-tac-toe-app---server-side)
+- [Tic Tac Toe App Client Side](#tic-tac-toe-app---client-side)
+- [Tic Tac Toe API](#tic-tac-toe-api)
+
+## Tic Tac Toe App - Server Side
+    
+### HTTP Server Structure
+
+### WS Server Structure
+
+#### Events
+
+##### Method types
+
+## Tic Tac Toe App - Client Side
 
 ## Tic Tac Toe API
 
