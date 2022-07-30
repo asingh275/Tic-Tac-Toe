@@ -46,7 +46,7 @@ const addUser = async (req, res, next) => {
               res
                 .set("content-location", `/api/v1/user/${userId}`)
                 .json({
-                  url: `/api/v1/match/${userId}`,
+                  url: `/api/v1/user/${userId}`,
                   data: {
                     userId,
                     name,
