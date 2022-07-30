@@ -11,6 +11,10 @@ const Homepage = (props) => {
   const [errorMessage, setErrorMessage] = useState(undefined);
   const [chatMessage, setchatMessage] = useState("");
   const [historyChat, setHistoryChat] = useState([]);
+  const [otherUser, setOtherUser] = useState(undefined);
+  const [heading, setHeading] = useState(<>
+    <span className="badge bg-primary text-light">Welcome!!!</span>
+    </>);
   const user = props.login;
 
   const createGame = () => {
@@ -19,6 +23,8 @@ const Homepage = (props) => {
       userID: user.uid,
       userName: user.displayName,
     });
+
+    showHeading(null);
   };
 
   const joinGame = (e) => {
@@ -29,6 +35,7 @@ const Homepage = (props) => {
       userName: user.displayName,
       gameId: gameIdForm,
     });
+    
   };
 
   const sendMessage = (e) => {
@@ -61,8 +68,10 @@ const Homepage = (props) => {
           setErrorMessage(undefined);
         }
         if (data.method === "game-joined") {
+          setOtherUser(data.other);
           setGameId(data.gameId);
           setErrorMessage(undefined);
+          showHeading(data.other);
         }
         if (data.method === "game-not-found") {
           setErrorMessage(data.errorMessage);
@@ -70,6 +79,10 @@ const Homepage = (props) => {
         if (data.method === "match-full") {
           setGameId(data.gameId);
           setErrorMessage(data.errorMessage);
+        }
+        if (data.method === "player-joined") {
+          setOtherUser(data.message);
+          showHeading(data.message);
         }
       });
       socket.on("message-chat", (data) => {
@@ -87,17 +100,39 @@ const Homepage = (props) => {
     }
   }, [socket]);
 
+
+  const showHeading = (other) => {
+    if (other!=null) {
+      setHeading(
+        <>
+        <span className="badge bg-primary text-light">{user.displayName}</span>   VS   <span className="badge bg-danger text-white">{other}</span>
+        </>
+      )
+    } else {
+      setHeading(
+        <>
+        <span className="badge bg-primary text-light">{user.displayName}</span>   VS   <span className="badge bg-danger text-white">Waiting for other user...</span>
+        </>
+      )
+    }
+  }
+
+
   return (
     <div className="w-100 h-100 m-0 p-0 homepage">
       <div className="container">
         <div className="row">
 
-          <div className="col-8">
+          <div className="col-16">
             <div className="container shadow rounded pb-5 bg-light">
               <div className="col w-80 h-100">
 
                 <div className="row text-center mt-5">
-                  <h1 className="mt-10"><span className="badge bg-warning text-dark">{user.displayName}'s Game</span></h1>
+                  <label><h1 className="mt-10">
+                    
+                    {heading}
+                    
+                    </h1></label>
                 </div>
                 <div className="row bg-light d-flex flex-row pt-5">
                   {gameId == null && (

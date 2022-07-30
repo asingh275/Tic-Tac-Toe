@@ -84,6 +84,7 @@ io.on("connection", (socket) => {
       };
       matches.push(game);
       socket.emit("message", { method: "game-created", ...game });
+      socket.join(game.gameId);
     }
 
 
@@ -242,6 +243,11 @@ io.on("connection", (socket) => {
         socket.emit("message", {
           method: "game-joined",
           gameId: message.gameId,
+          other: matches[indexMatch].player1Name,
+        });
+        io.to(matches[indexMatch].player1Socket).emit("message", {
+          method: "player-joined",
+          message: message.userName,
         });
       }
     }
