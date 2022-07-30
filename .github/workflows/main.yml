@@ -29,6 +29,25 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout
         uses: actions/checkout@v2
+        
+      - name: Install newman
+        run: |
+          npm install -g newman
+          npm install -g newman-reporter-htmlextra
+          
+      - name: Make Directory for results
+        run: mkdir -p testResults
+        
+      # Run the POSTMAN collection
+      - name: Run POSTMAN collection
+        run: |
+          newman run Tic-Tac-Toe.postman_collection.json -r htmlextra --reporter-htmlextra-export testResults/htmlreport.html --reporter-htmlextra-darkTheme  > testResults/runreport1.html
+    # Upload the contents of Test Results directory to workspace
+      - name: Output the run Details
+        uses: actions/upload-artifact@v2
+        with:
+          name: RunReports
+          path: testResults
 
       # Runs a single command using the runners shell
       - name: Login to Docker Hub
