@@ -213,7 +213,7 @@ return (
           
           {gameId !== null && (
           
-            <div className="col-lg-3 col-md-12 align-self-center">
+            <div className="col-lg-4 col-md-12 align-self-center mt-4">
                 <div className="rounded d-flex flex-column">
                   {heading}
                 </div>
@@ -227,7 +227,7 @@ return (
                 {errorMessage !== undefined && <h4>{errorMessage}</h4>}
                 {gameId !== null && (
                 
-                  <div className="col-lg-6 col-md-12 bg-light p-3 mt-5 rounded text-center">
+                  <div className="col-lg-5 col-md-12 bg-light p-3 mt-5 rounded text-center">
                     <TicTacToe user={user} socket={socket} gameId={gameId} setEmailMessage={setEmailMessage} setResultMessage={setResultMessage}></TicTacToe>
                     <h2><span className="badge bg-dark">Game ID: {gameId}</span></h2>
                     <button onClick={(e) => leaveGame(e)} className="btn btn-dark mt-3">Leave Game</button>

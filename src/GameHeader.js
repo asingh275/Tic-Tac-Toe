@@ -4,8 +4,8 @@ import UserInfo from './UserInfo'
 const GameHeader = (props) => {
     if(props.resultMessage) {
         return (
-            <div className="d-flex flex-column align-items-center mt-4 bg-light rounded p-3">
-             <div>
+            <div className="d-flex flex-column align-items-center mt-4">
+             <div className='bg-light rounded p-3 mb-3'>
                 {props.resultMessage === "You win!" && (
                     <><div className="alert alert-success">
                         You Win!
@@ -27,13 +27,13 @@ const GameHeader = (props) => {
                         </button>
                     )}
             </div>
-            <div>
+            
                 <UserInfo user={props.user} />
                 <div className="text-center rounded bg-danger me-3 fs-3 text-light p-3 my-2">
                         VS
                 </div>
                 <UserInfo user={props.other}/>
-            </div>
+            
             
         </div>
         )
