@@ -190,19 +190,6 @@ return (
                               joinGame(e);
                             }}
                           >
-
-                            {/*
-                              <div class="input-group">
-                                <input
-                                  type="email"
-                                  value={emailToShare}
-                                  onChange={(e) => setEmailToShareId(e)}
-                                  className="form-control"
-                                  placeholder="Recipient's Email"
-                                />
-                              <button className="btn btn-success" name="submitmsg" type="submit" id="submitmsg" >Share Game ID</button>
-                           </div>   
-                          */}
                             <div className="col-md-12">
                               <div className="input-group">
                                   <input
