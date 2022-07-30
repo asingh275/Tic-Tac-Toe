@@ -20,7 +20,6 @@ const database = firebaseDB.getDatabase(app);
 //Signup
 const writeUserData = async (userId, name, email, imageUrl) => {
   const userAlreadyinDB = async (userToVerified) => {
-    console.log("Entre");
     const userString = "users/" + userToVerified;
     const snapshot = await firebaseDB.get(
         firebaseDB.child(firebaseDB.ref(database), userString)
@@ -50,8 +49,32 @@ const writeUserData = async (userId, name, email, imageUrl) => {
 
 const addUser = async (req, res, next) => {
   const { userId, name, email, imageUrl } = req.body;
-  console.log(await writeUserData(userId, name, email, imageUrl));
-  console.log("Funciono");
+  await writeUserData(userId, name, email, imageUrl);
 };
 
-module.exports = { addUser };
+const getUserById = async (req, res, next) => {
+    const {userID} = req.params;
+    const userString = `users/${userID}`;
+    firebaseDB.get(
+        firebaseDB.child(firebaseDB.ref(database), userString)
+    ).then((snapshot) => {
+        let user = snapshot.exportVal();
+        let location = `/api/v1/user/${userID}`;
+        if(user === null){
+            user = {};
+            location = `/api/v1/user/`;
+        }
+        res.set('content-location',`${location}`).json({
+            url:  `${location}`,
+            data: user
+        }).status(201)
+    }).catch((error) => {
+        res.json({
+            message: "Encounter an error while fetching user",
+            error: error
+        }).status(500)
+    });
+};
+
+
+module.exports = { addUser, getUserById };

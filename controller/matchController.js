@@ -17,41 +17,92 @@ const firebaseConfig = {
 const app = firebase.initializeApp(firebaseConfig);
 const database = firebaseDB.getDatabase(app);
 
-//Signup
-const writeUserData = async (userId, name, email, imageUrl) => {
-  const userAlreadyinDB = async (userToVerified) => {
-    console.log("Entre");
-    const userString = "users/" + userToVerified;
-    const snapshot = await firebaseDB.get(
+const getAllMatches = (req, res, next)=> {
+    const userString = "matches/";
+    firebaseDB.get(
         firebaseDB.child(firebaseDB.ref(database), userString)
-    );
-    return snapshot.exists();
-  };
-  if (!(await userAlreadyinDB(userId))) {
-    firebaseDB.set(firebaseDB.ref(database, "users/" + userId), {
-      username: name,
-      email: email,
-      profile_picture: imageUrl,
-    }).then(() => {
-        return {
-            status : "Success",
+    ).then((snapshot) => {
+        let matches = snapshot.exportVal();
+        if(matches === null){
+            matches = {};
         }
+        res.set('content-location',`/api/v1/match`).json({
+            url:  `/api/v1/match`,
+            data: Object.getOwnPropertyNames(matches)
+        }).status(201)
     }).catch((error) => {
-        return {
-            status : "Failed",
-        }
+        res.json({
+            message: "Encounter an error while fetching all matches",
+            error: error
+        }).status(500)
     });
-  } else {
-    return {
-        status : "User already exists",
-    }
-  }
+}
+
+const getMatchById = (req, res, next)=> {
+    const {gameID} = req.params;
+    const userString = `matches/${gameID}`;
+    firebaseDB.get(
+        firebaseDB.child(firebaseDB.ref(database), userString)
+    ).then((snapshot) => {
+        let match = snapshot.exportVal();
+        let location = `/api/v1/match/${gameID}`;
+        if(match === null){
+            match = {};
+            location = `/api/v1/match/`;
+        }
+        res.set('content-location',`${location}`).json({
+            url:  `${location}`,
+            data: match
+        }).status(201)
+    }).catch((error) => {
+        res.json({
+            message: "Encounter an error while match",
+            error: error
+        }).status(500)
+    });
+}
+
+
+const addMatch = async (req, res, next) => {
+  const {
+    player1Name,
+    player1ID,
+    player2Name,
+    player2ID,
+    player1Wins,
+    player2Wins,
+    gameID,
+  } = req.body;
+  firebaseDB
+    .set(firebaseDB.ref(database, "matches/" + gameID), {
+      gameID,
+      player1Name,
+      player1ID,
+      player2Name,
+      player2ID,
+      player1Wins,
+      player2Wins,
+    })
+    .then(() => {
+        res.set('content-location',`/api/v1/match/${gameID}`).json({
+            url:  `/api/v1/match/${gameID}`,
+            data: {
+                player1Name,
+                player1ID,
+                player2Name,
+                player2ID,
+                player1Wins,
+                player2Wins,
+                gameID,
+              }
+        }).status(201)
+    })
+    .catch((error) => {
+        res.json({
+            message: "Encounter an error while adding match",
+            error: error
+        }).status(500)
+    });
 };
 
-const addUser = async (req, res, next) => {
-  const { gameID, player1ID, player2ID, winsPlayer1, winsPlayer2 } = req.body;
-  console.log(await writeUserData(userId, name, email, imageUrl));
-  console.log("Funciono");
-};
-
-module.exports = { addUser };
+module.exports = { addMatch, getAllMatches, getMatchById };

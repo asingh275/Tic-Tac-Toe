@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const axios = require("axios");
 const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
@@ -68,10 +69,8 @@ const checkForTie = (board) => {
 let matches = [];
 
 io.on("connection", (socket) => {
-  console.log("New connection " + socket.id);
   socket.on("message", (message) => {
     if (message.method === "create-game") {
-      console.log(socket.id);
       let game = {
         gameId: new Date().valueOf(),
         createdBy: message.userID,
@@ -118,8 +117,13 @@ io.on("connection", (socket) => {
         player2Symbol,
         player1Socket,
         player2Socket,
+        player1Score,
+        player2Score,
         player1,
         player2,
+        player1Name,
+        player2Name,
+        gameId,
       } = matches[indexMatch];
       if (currentTurn === message.userID) {
         if (currentTurn === player1) {
@@ -134,31 +138,40 @@ io.on("connection", (socket) => {
             method: "move-made",
             message: result,
             board,
-            player1Score: matches[indexMatch].player1Score,
-            player2Score: matches[indexMatch].player2Score,
+            player1Score,
+            player2Score,
           });
           io.to(player1Socket).emit("message", {
             method: "move-made",
             message: result,
             board,
-            player1Score: matches[indexMatch].player1Score,
-            player2Score: matches[indexMatch].player2Score,
+            player1Score,
+            player2Score,
           });
           if (checkWin(board) !== "") {
             let winnerMessage = "You win!";
             let loserMessage = "You lose!";
+            let payload = {
+              gameId,
+              player1Name,
+              player1,
+              player2Name,
+              player2,
+            };
 
             if (checkWin(board) === player1Symbol) {
               matches[indexMatch].player1Score++;
               io.to(player1Socket).emit("message", {
                 method: "game-over",
                 message: winnerMessage,
+                ...payload,
                 player1Score: matches[indexMatch].player1Score,
                 player2Score: matches[indexMatch].player2Score,
               });
               io.to(player2Socket).emit("message", {
                 method: "game-over",
                 message: loserMessage,
+                ...payload,
                 player1Score: matches[indexMatch].player1Score,
                 player2Score: matches[indexMatch].player2Score,
               });
@@ -167,12 +180,14 @@ io.on("connection", (socket) => {
               io.to(player1Socket).emit("message", {
                 method: "game-over",
                 message: loserMessage,
+                ...payload,
                 player1Score: matches[indexMatch].player1Score,
                 player2Score: matches[indexMatch].player2Score,
               });
               io.to(player2Socket).emit("message", {
                 method: "game-over",
                 message: winnerMessage,
+                ...payload,
                 player1Score: matches[indexMatch].player1Score,
                 player2Score: matches[indexMatch].player2Score,
               });
@@ -184,12 +199,14 @@ io.on("connection", (socket) => {
             io.to(player1Socket).emit("message", {
               method: "game-over",
               message: tieMessage,
+              ...payload,
               player1Score: matches[indexMatch].player1Score,
               player2Score: matches[indexMatch].player2Score,
             });
             io.to(player2Socket).emit("message", {
               method: "game-over",
               message: tieMessage,
+              ...payload,
               player1Score: matches[indexMatch].player1Score,
               player2Score: matches[indexMatch].player2Score,
             });
@@ -262,8 +279,15 @@ io.on("connection", (socket) => {
             message: "Update",
             board: matches[indexMatch].board,
           });
-          let {player1Socket, player2Socket, player1Name, player2Name, historyChat, gameId} = matches[indexMatch];
-          if(socket.id === player1Socket){
+          let {
+            player1Socket,
+            player2Socket,
+            player1Name,
+            player2Name,
+            historyChat,
+            gameId,
+          } = matches[indexMatch];
+          if (socket.id === player1Socket) {
             historyChat.push({
               userID: 0000000,
               userName: "System",
@@ -279,7 +303,7 @@ io.on("connection", (socket) => {
               method: "update-chat",
               historyChat,
             });
-          }else{
+          } else {
             historyChat.push({
               userID: 0000000,
               userName: "System",
@@ -316,8 +340,15 @@ io.on("connection", (socket) => {
           method: "player-joined",
           message: message.userName,
         });
-        let {player1Socket, player2Socket, player1Name, player2Name, historyChat, gameId} = matches[indexMatch];
-        if(socket.id === player1Socket){
+        let {
+          player1Socket,
+          player2Socket,
+          player1Name,
+          player2Name,
+          historyChat,
+          gameId,
+        } = matches[indexMatch];
+        if (socket.id === player1Socket) {
           historyChat.push({
             userID: 0000000,
             userName: "System",
@@ -329,7 +360,7 @@ io.on("connection", (socket) => {
             method: "update-chat",
             historyChat,
           });
-        }else{
+        } else {
           historyChat.push({
             userID: 0000000,
             userName: "System",
@@ -348,12 +379,19 @@ io.on("connection", (socket) => {
         }
       }
     }
-    if (message.method === "exit-game"){
+    if (message.method === "exit-game") {
       let indexMatch = matches.findIndex(
         (match) => match.gameId == message.gameId
       );
-      let {player1Socket, player2Socket, player1Name, player2Name, historyChat, gameId} = matches[indexMatch];
-      if(socket.id === player1Socket){
+      let {
+        player1Socket,
+        player2Socket,
+        player1Name,
+        player2Name,
+        historyChat,
+        gameId,
+      } = matches[indexMatch];
+      if (socket.id === player1Socket) {
         historyChat.push({
           userID: 0000000,
           userName: "System",
@@ -365,7 +403,7 @@ io.on("connection", (socket) => {
           method: "update-chat",
           historyChat,
         });
-      }else{
+      } else {
         historyChat.push({
           userID: 0000000,
           userName: "System",

@@ -69,7 +69,6 @@ const Homepage = (props) => {
 
   useEffect(() => {
     if (socket === null) {
-      console.log(`${location.protocol}//${location.host}`);
       setSocket(io(`${location.protocol}//${location.host}`));
     }
     if (socket) {
