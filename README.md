@@ -33,6 +33,8 @@ https://cpsc2650-tic-tac-toe.herokuapp.com/
 - [Tic Tac Toe App Server Side](#tic-tac-toe-app---server-side)
 - [Tic Tac Toe App Client Side](#tic-tac-toe-app---client-side)
 - [Tic Tac Toe API](#tic-tac-toe-api)
+- [CI/CD](#cicd)
+- [Testing](#testing)
 
 ## Tic Tac Toe App - Server Side
     
@@ -235,3 +237,15 @@ Every push to main branch goes through : -
 ### Heroku
 Added Github as Deployment method through which,
 every push to main will deploy a new version of this app. Deploys are done automatically by Heroku.
+  
+
+
+## Testing
+
+### Postman
+
+Each [Tic Tac Toe API](#tic-tac-toe-api) is tested through postman tests. Each API is tested against the following : -  
+- HTTP status code
+- Response payload' type
+- Returned values and keys, and
+- Data type of values
