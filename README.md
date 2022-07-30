@@ -24,11 +24,51 @@ https://cpsc2650-tic-tac-toe.herokuapp.com/
 
 ### WS Server Structure
 
-#### Events
+### WS Events
+
+#### message event
 
 ##### Method types
 
+- create-game
+- reset-game
+- join-game
+- exit-game
+- make-move
+
+#### message-chat event
+
+##### Method types
+
+- send-message
+
 ## Tic Tac Toe App - Client Side
+
+### WS Events
+
+#### message event
+
+##### Method types
+
+- game-created
+- game-reset
+- game-joined
+- game-exited
+- game-over-error
+- invalid-turn
+- invalid-position
+- game-over
+- move-made
+- game-not-found
+- match-full
+- player-joined
+
+
+#### message-chat event
+
+##### Method types
+
+- update-chat
 
 ## Tic Tac Toe API
 
