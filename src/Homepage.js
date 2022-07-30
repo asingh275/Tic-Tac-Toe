@@ -157,9 +157,6 @@ const Homepage = (props) => {
     }
   }
 
-  
-
-
 return (
   <div className="vh-100 vw-100 m-0 p-0 homepage">
       
@@ -169,29 +166,68 @@ return (
               {heading}
             </div>
           )}        
-          <div className="mt-3 shadow rounded p-5 bg-light">
-              <div className="bg-light d-flex flex-row pt-5">
+              <div className="bg-light p-3 mt-5 rounded">
                 {gameId == null && (
-                  <div className="container">
-                    <form
-                      onSubmit={(e) => {
-                        joinGame(e);
-                      }}
-                    >
-                      <input
-                        type="text"
-                        onChange={(e) => setGameFormId(e.target.value)}
-                      />
-
-                      <button className="ms-3 btn btn-dark" type="submit">Join Game</button>
-
-
-                    </form>
-                    <div className="mt-4">
-                      <button className="btn btn-dark" onClick={() => createGame()}>Create Game</button>
+                  <div className="container text-start p-5">
+                    <div className="row">
+                        <div className="col-md-12 mb-1">
+                          <h2>Create or join a room to start playing</h2>
+                        </div>
                     </div>
+                    <div className="row">
+                        <div className="col-md-12 mb-4">
+                          <h3>
+                              <small className="text-muted">Invite a friend over to a challenge!</small>
+                          </h3>
+                          
+                        </div>
+                    </div>
+                    <div className="row">
 
+                    
+                        <form
+                            onSubmit={(e) => {
+                              joinGame(e);
+                            }}
+                          >
+
+                            {/*
+                              <div class="input-group">
+                                <input
+                                  type="email"
+                                  value={emailToShare}
+                                  onChange={(e) => setEmailToShareId(e)}
+                                  className="form-control"
+                                  placeholder="Recipient's Email"
+                                />
+                              <button className="btn btn-success" name="submitmsg" type="submit" id="submitmsg" >Share Game ID</button>
+                           </div>   
+                          */}
+                            <div className="col-md-12">
+                              <div className="input-group">
+                                  <input
+                                    type="text"
+                                    onChange={(e) => setGameFormId(e.target.value)}
+                                    className="form-control"
+                                    placeholder="Insert Game ID here"
+                                  />
+                                  <button className="btn btn-dark" type="submit">Join Game</button>
+                              </div>
+                                
+                            </div>
+                        </form>
+                      
+                    </div>
+                  <div className="row">
+                    <div className="col-md-12">
+
+                    
+                      <div className="mt-2">
+                        <button className="btn btn-dark" onClick={() => createGame()}>Create Game</button>
+                      </div>
+                    </div>
                   </div>
+                </div>
                 )}
                 {errorMessage !== undefined && <h4>{errorMessage}</h4>}
                 {gameId !== null && (
@@ -214,17 +250,12 @@ return (
                   </div>
                   
                 )}
-              </div>
-            
-
-          </div>
-
-        
+              </div>      
 
 
         
           {gameId !== null && (
-            <div className="d-flex flex-column align-items-end shadow bg-dark text-light rounded justify-content-center">
+            <div className="d-flex flex-column align-items-end shadow bg-dark text-light rounded justify-content-center mt-3">
               
                 <div className="chat p-3 d-flex flex-column overflow-auto">
                   {historyChat.map((chat, index) => {
