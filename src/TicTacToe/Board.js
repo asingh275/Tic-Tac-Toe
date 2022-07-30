@@ -6,7 +6,6 @@ import axios from "axios";
 const Board = (props) => {
   const [board, setBoard] = useState(["", "", "", "", "", "", "", "", ""]);
   const [gameError, setGameError] = useState(undefined);
-  const [resultMessage, SetResultMessage] = useState(undefined);
   const [player1Score, SetPlayer1Score] = useState(0);
   const [player2Score, SetPlayer2Score] = useState(0);
   const [socket, setSocket] = useState(null);
@@ -19,13 +18,6 @@ const Board = (props) => {
       position: square,
     });
     props.setEmailMessage(undefined);
-  };
-
-  const resetGame = () => {
-    props.socket.emit("message", {
-      method: "reset-game",
-      gameId: props.gameId,
-    });
   };
 
   useEffect(() => {
@@ -45,7 +37,7 @@ const Board = (props) => {
               setGameError(data.message);
             } else if (data.method === "game-over") {
                 console.log(data);
-              SetResultMessage(data.message);
+              props.setResultMessage(data.message);
               SetPlayer1Score(data.player1Score);
               SetPlayer2Score(data.player2Score);
               axios
@@ -69,18 +61,18 @@ const Board = (props) => {
             } else if (data.method === "game-reset") {
               setBoard(data.board);
               setGameError(undefined);
-              SetResultMessage(undefined);
+              props.setResultMessage(undefined);
               SetPlayer1Score(data.player1Score);
               SetPlayer2Score(data.player2Score);
             }
           });
     }
   }, [socket]);
+  
 
 
   return (
     <div className="board mt-4 shadow">
-      {resultMessage !== undefined && <h2>{resultMessage}</h2>}
       <div className="row">
         <Square value={board[0]} selectSquare={() => selectSquare(0)}></Square>
         <Square value={board[1]} selectSquare={() => selectSquare(1)}></Square>
@@ -97,11 +89,7 @@ const Board = (props) => {
         <Square value={board[8]} selectSquare={() => selectSquare(8)}></Square>
       </div>
       {gameError && <h5>{gameError}</h5>}
-      {resultMessage !== undefined && (
-        <button className="btn btn-dark my-3" onClick={() => resetGame()}>
-          Reset Game
-        </button>
-      )}
+      
       <div>
         <h4>Score: </h4>
         <h5>

@@ -2,7 +2,7 @@ import React from "react";
 import TicTacToe from "./TicTacToe/TicTacToe";
 import { useState, useEffect } from "react";
 import io from "socket.io-client";
-import UserInfo from "./UserInfo";
+import GameHeader from "./GameHeader";
 import './chat.css'
 import axios from "axios";
 
@@ -20,6 +20,8 @@ const Homepage = (props) => {
   </>);
   const [emailToShare, setEmailToShare] = useState("");
   const user = props.login;
+  const [resultMessage, setResultMessage] = useState(undefined)
+
 
   const createGame = () => {
     socket.emit("message", {
@@ -138,28 +140,19 @@ const Homepage = (props) => {
 
 
   const showHeading = (other) => {
-    if (other != null) {
-      setHeading(
-        <div className="d-flex flex-column align-items-center mt-4 me-3">
-          <UserInfo user={user} />
-          <div className="text-center rounded bg-danger me-3 fs-3 text-light p-3 my-2">
-            VS
-          </div>
-          <UserInfo user={other}/>
-        </div>
-      )
-    } else {
-      setHeading(
-        <div className="d-flex flex-column align-items-center mt-4">
-          <UserInfo user={user} />
-          <div className="text-center rounded bg-danger me-3 fs-3 text-light p-3 my-2">
-            VS
-          </div>
-          <UserInfo />
-        </div>
-      )
-    }
+    setHeading(<GameHeader user={user} other={other} resultMessage={resultMessage} resetGame={resetGame}></GameHeader>)
   }
+
+  const resetGame = () => {
+    socket.emit("message", {
+      method: "reset-game",
+      gameId: gameId,
+    });
+  };
+
+  useEffect(() => {
+    showHeading(otherUser);
+  }, [resultMessage])
 
 return (
   <div className="vh-100 vw-100 m-0 p-0 homepage">
@@ -221,7 +214,7 @@ return (
           {gameId !== null && (
           
             <div className="col-lg-3 col-md-12 align-self-center">
-                <div className="rounded d-flex flex-column justify-content-center">
+                <div className="rounded d-flex flex-column">
                   {heading}
                 </div>
             </div>
@@ -235,7 +228,7 @@ return (
                 {gameId !== null && (
                 
                   <div className="col-lg-6 col-md-12 bg-light p-3 mt-5 rounded text-center">
-                    <TicTacToe user={user} socket={socket} gameId={gameId} setEmailMessage={setEmailMessage}></TicTacToe>
+                    <TicTacToe user={user} socket={socket} gameId={gameId} setEmailMessage={setEmailMessage} setResultMessage={setResultMessage}></TicTacToe>
                     <h2><span className="badge bg-dark">Game ID: {gameId}</span></h2>
                     <button onClick={(e) => leaveGame(e)} className="btn btn-dark mt-3">Leave Game</button>
                     <form onSubmit={(e) => shareGameId(e)} className="mt-2">
@@ -259,10 +252,8 @@ return (
 
         
           {gameId !== null && (
-          <div className="col-lg-3 col-md-12 col-sm-12 mt-md-0 mt-5 mx-auto mb-4">
+          <div className="col-lg-3 col-md-12 col-sm-12 mt-md-0 mt-lg-5 mx-auto mb-4">
 
-         
-            {/* <div className="d-flex flex-column align-items-end shadow bg-dark text-light rounded mt-3"> */}
               <div className="row align-items-end bg-dark shadow text-light rounded">
                 <div className="chat p-3 col overflow-auto">
                   {historyChat.map((chat, index) => {
@@ -286,7 +277,6 @@ return (
                          <button className="btn btn-success" name="submitmsg" type="submit" id="submitmsg"> Send </button>
                       </div>                      
                   </form>             
-            {/* </div> */}
                   </div>
            </div>
           )}

@@ -3,6 +3,8 @@ import Board from "./Board";
 import "./tictactoe.css";
 
 const TicTacToe = (props) => {
+  
+
   return (
     <div className="game-container">
       <div className="container">
@@ -12,6 +14,7 @@ const TicTacToe = (props) => {
           socket={props.socket}
           user={props.user}
           gameId={props.gameId}
+          setResultMessage={props.setResultMessage}
         ></Board>
       </div>
     </div>
