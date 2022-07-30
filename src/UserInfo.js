@@ -6,8 +6,6 @@ const UserInfo = (props) => {
   
     if(props.user) {
         return ( 
-            
-        
             <div className="user-card me-3">
                 <div className="user-info d-flex align-items-center">
                     <img className="profile-image" src={props.user.photoURL ? props.user.photoURL : "https://nwsid.net/wp-content/uploads/2015/05/dummy-profile-pic.png"} alt="User photo" />
