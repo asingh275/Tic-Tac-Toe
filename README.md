@@ -1,16 +1,32 @@
 # Tic-Tac-Toe
 
 ## Description
+A web application where you can play tic-tac-toe with your friends!  
+While playing you can chat with your opponent and enjoy game even more!!
 
-### Docker Image !
-
+### Docker Image!
 https://hub.docker.com/repository/docker/asingh275/tic-tac-toe
 
 ### Website Link
-
 https://cpsc2650-tic-tac-toe.herokuapp.com/
 
+## Start Playing in simple steps!
+- Login with you Github or Google account
+- Create Game (*If you don't have Game ID to join with your friend*)
+    - Share Game ID with your friend
+        - You can use email feature of this application where you input your friend's email and send Game ID through email\
+    - Wait for them to join
+    - Play!
+- Join Game (*If you have Game ID*)
+    - Play!
+
 ## Features
+- Easy login with Google or Github account
+- Send email to share Game ID
+- Chat while playing
+- Aesthetic design
+- Quick responses
+
 
 # Documentation
 
@@ -206,3 +222,16 @@ Expected result
     to: "test@example.com",
 }
 ```
+
+## CI/CD
+
+### Github Actions
+Every push to main branch goes through : -  
+- **Postman Tests**  
+        Postman test cases test the new code against all the [APIs'](#tic-tac-toe-api)
+- **Docker Build**  
+        This application is containerized efficiently and pushed to Docker Hub (By efficiently means by using cache)
+        
+### Heroku
+Added Github as Deployment method through which,
+every push to main will deploy a new version of this app. Deploys are done automatically by Heroku.
