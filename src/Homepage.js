@@ -115,13 +115,21 @@ const Homepage = (props) => {
     if (other != null) {
       setHeading(
         <>
-          <span className="badge bg-primary text-light">{user.displayName}</span>   VS   <span className="badge bg-danger text-white">{other}</span>
+          <UserInfo user={user} />
+          <div className="text-center rounded bg-danger me-3 fs-3 text-light">
+            VS
+          </div>
+          <UserInfo user={other} />
         </>
       )
     } else {
       setHeading(
         <>
-          <span className="badge bg-primary text-light">{user.displayName}</span>   VS   <span className="badge bg-danger text-white">Waiting for other user...</span>
+          <UserInfo user={user} />
+          <div className="text-center rounded bg-danger me-3 fs-3 text-light">
+            VS
+          </div>
+          <UserInfo />
         </>
       )
     }
@@ -133,20 +141,13 @@ const Homepage = (props) => {
 return (
   <div className="vh-100 vw-100 m-0 p-0 homepage">
       
-      <div className="mt-3 container d-flex flex-row">  
+      <div className="container d-flex flex-row">  
           {gameId !== null && (
             <div className="shadow rounded d-flex flex-column justify-content-center">
-              <UserInfo user={user} />
+              {heading}
             </div>
           )}        
-          <div className="shadow rounded pb-5 bg-light">
-              <div className="text-center mt-5">
-              <label><h1 className="mt-10">
-
-{heading}
-
-</h1></label>
-              </div>
+          <div className="mt-3 shadow rounded p-5 bg-light">
               <div className="bg-light d-flex flex-row pt-5">
                 {gameId == null && (
                   <div className="container">
