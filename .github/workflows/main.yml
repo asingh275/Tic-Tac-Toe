@@ -34,7 +34,7 @@ jobs:
 
       - name: Install newman
         run: |
-          npm install -g newman.    
+          npm install -g newman    
           npm install -g newman-reporter-slackmsg
 
       - name: Run Test
