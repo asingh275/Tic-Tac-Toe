@@ -401,12 +401,13 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/api/v1/user/",
-					"protocol": "http",
+					"raw": "https://cpsc2650-tic-tac-toe.herokuapp.com/api/v1/match/1659151194907",
+					"protocol": "https",
 					"host": [
-						"localhost"
+						"cpsc2650-tic-tac-toe",
+						"herokuapp",
+						"com"
 					],
-					"port": "3000",
 					"path": [
 						"api",
 						"v1",
