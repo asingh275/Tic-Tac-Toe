@@ -18,6 +18,7 @@ const Board = (props) => {
       userID: props.user.uid,
       position: square,
     });
+    props.setEmailMessage(undefined);
   };
 
   const resetGame = () => {

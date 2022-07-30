@@ -14,6 +14,7 @@ const Homepage = (props) => {
   const [chatMessage, setchatMessage] = useState("");
   const [historyChat, setHistoryChat] = useState([]);
   const [otherUser, setOtherUser] = useState(undefined);
+  const [emailMessage, setEmailMessage] = useState(undefined);
   const [heading, setHeading] = useState(<>
     <span className="badge bg-primary text-light">Welcome!!!</span>
   </>);
@@ -80,10 +81,12 @@ const Homepage = (props) => {
        userName: user.displayName
   })
   .then(function (response) {
-    console.log(response);
+    setEmailToShare("");
+    setEmailMessage(response.data.message);
   })
   .catch(function (error) {
-    console.log(error);
+    setEmailToShare("");
+    setEmailMessage(response.data.message);
   });
     console.log(e)
   }
@@ -115,6 +118,7 @@ const Homepage = (props) => {
         if (data.method === "player-joined") {
           setOtherUser(data.message);
           showHeading(data.message);
+          setEmailMessage(undefined);
         }
       });
       socket.on("message-chat", (data) => {
@@ -196,7 +200,7 @@ return (
                 {errorMessage !== undefined && <h4>{errorMessage}</h4>}
                 {gameId !== null && (
                   <div className="d-flex flex-column p-2 flex-grow-1 text-center">
-                    <TicTacToe user={user} socket={socket} gameId={gameId}></TicTacToe>
+                    <TicTacToe user={user} socket={socket} gameId={gameId} setEmailMessage={setEmailMessage}></TicTacToe>
                     <h2><span className="badge bg-dark">Game ID: {gameId}</span></h2>
                     <button onClick={(e) => leaveGame(e)} className="btn btn-dark mt-3">Leave Game</button>
                     <form onSubmit={(e) => shareGameId(e)} className="mt-2">
@@ -209,7 +213,8 @@ return (
                           placeholder="Recipient's Email"
                          />
                          <button className="btn btn-success" name="submitmsg" type="submit" id="submitmsg" >Share Game ID</button>
-                      </div>                      
+                      </div>
+                      {emailMessage !== undefined && <b><i><p>{emailMessage}</p></i></b>}                 
                   </form>  
                   </div>
                   
