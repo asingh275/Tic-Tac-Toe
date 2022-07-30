@@ -337,10 +337,18 @@ io.on("connection", (socket) => {
         matches[indexMatch].player2Name = message.userName;
         matches[indexMatch].player2Socket = socket.id;
         matches[indexMatch].player2Symbol = "o";
+        if(matches[indexMatch].currentTurn === undefined){
+          matches[indexMatch].currentTurn = message.userID;
+        }
         socket.emit("message", {
           method: "game-joined",
           gameId: message.gameId,
           other: matches[indexMatch].player1Name,
+        });
+        socket.emit("message", {
+          method: "move-made",
+          message: "Update",
+          board: matches[indexMatch].board,
         });
         io.to(matches[indexMatch].player1Socket).emit("message", {
           method: "player-joined",
