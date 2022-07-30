@@ -9,9 +9,6 @@
     max-height: 700px;
 }
 
-.main-content {
-    /* max-height: ; */
-}
 .homepage {
     background-image: url("https://cdn.dribbble.com/users/3474264/screenshots/11222954/media/238ffe693cece80e5add668b12937b85.png");
     background-repeat: no-repeat;
@@ -31,4 +28,19 @@
     border-radius: 10px;
     background-color:#fff;
     -webkit-box-shadow: inset 0 0 6px rgba(90,90,90,0.7);
+}
+
+.user-card {
+    background-color: #fff;
+	font-size: small;
+    width: 300px;
+	border-radius: 15px;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	padding: 2rem !important;
+}
+
+.profile-image{
+    width: 35px;
+	border-radius: 10px;
+	border: 2px solid #5957f9;
 }

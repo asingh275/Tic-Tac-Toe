@@ -2,6 +2,7 @@ import React from "react";
 import TicTacToe from "./TicTacToe/TicTacToe";
 import { useState, useEffect } from "react";
 import io from "socket.io-client";
+import UserInfo from "./UserInfo";
 import './chat.css'
 
 const Homepage = (props) => {
@@ -89,8 +90,13 @@ const Homepage = (props) => {
 
   return (
     <div className="vh-100 vw-100 m-0 p-0 homepage">
-     
-        <div className="container d-flex flex-row main-content">          
+        
+        <div className="mt-3 container d-flex flex-row">  
+            {gameId !== null && (
+              <div className="shadow rounded d-flex flex-column justify-content-center">
+                <UserInfo user={user} />
+              </div>
+            )}        
             <div className="shadow rounded pb-5 bg-light">
                 <div className="text-center mt-5">
                   <h1 className="mt-10"><span className="badge bg-warning text-dark">{user.displayName}'s Game</span></h1>
@@ -120,10 +126,14 @@ const Homepage = (props) => {
                   )}
                   {errorMessage !== undefined && <h4>{errorMessage}</h4>}
                   {gameId !== null && (
-                    <div className="d-flex flex-column p-5 flex-grow-1 text-center">
-                      <TicTacToe user={user} socket={socket} gameId={gameId}></TicTacToe>
-                      <h2><span className="badge bg-dark">Game ID: {gameId}</span></h2>
+                    <div className="d-flex">
+                      
+                        <div className="d-flex flex-column p-5 flex-grow-1 text-center">
+                          <TicTacToe user={user} socket={socket} gameId={gameId}></TicTacToe>
+                          <h2><span className="badge bg-dark">Game ID: {gameId}</span></h2>
+                        </div>
                     </div>
+                    
                   )}
                 </div>
               
