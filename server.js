@@ -91,6 +91,7 @@ io.on("connection", (socket) => {
       };
       matches.push(game);
       socket.emit("message", { method: "game-created", ...game });
+      socket.join(game.gameId);
     }
     if (message.method == "reset-game") {
       let game = matches.find((game) => game.gameId == message.gameId);
@@ -309,6 +310,11 @@ io.on("connection", (socket) => {
         socket.emit("message", {
           method: "game-joined",
           gameId: message.gameId,
+          other: matches[indexMatch].player1Name,
+        });
+        io.to(matches[indexMatch].player1Socket).emit("message", {
+          method: "player-joined",
+          message: message.userName,
         });
         let {player1Socket, player2Socket, player1Name, player2Name, historyChat, gameId} = matches[indexMatch];
         if(socket.id === player1Socket){
