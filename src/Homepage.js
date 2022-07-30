@@ -88,18 +88,14 @@ const Homepage = (props) => {
   }, [socket]);
 
   return (
-    <div className="w-100 h-100 m-0 p-0 homepage">
-      <div className="container">
-        <div className="row">
-
-          <div className="col-8">
-            <div className="container shadow rounded pb-5 bg-light">
-              <div className="col w-80 h-100">
-
-                <div className="row text-center mt-5">
+    <div className="vh-100 vw-100 m-0 p-0 homepage">
+     
+        <div className="container d-flex flex-row main-content">          
+            <div className="shadow rounded pb-5 bg-light">
+                <div className="text-center mt-5">
                   <h1 className="mt-10"><span className="badge bg-warning text-dark">{user.displayName}'s Game</span></h1>
                 </div>
-                <div className="row bg-light d-flex flex-row pt-5">
+                <div className="bg-light d-flex flex-row pt-5">
                   {gameId == null && (
                     <div className="container">
                       <form
@@ -124,24 +120,24 @@ const Homepage = (props) => {
                   )}
                   {errorMessage !== undefined && <h4>{errorMessage}</h4>}
                   {gameId !== null && (
-                    <div className="d-flex flex-column p-2 flex-grow-1 text-center">
+                    <div className="d-flex flex-column p-5 flex-grow-1 text-center">
                       <TicTacToe user={user} socket={socket} gameId={gameId}></TicTacToe>
                       <h2><span className="badge bg-dark">Game ID: {gameId}</span></h2>
                     </div>
                   )}
                 </div>
-              </div>
+              
 
             </div>
 
-          </div>
+          
 
 
-          <div className="col-4 h-100">
+          
             {gameId !== null && (
-              <div className="p-2 d-flex align-items-end mw-50 shadow bg-dark text-light chat-box">
-                <div>
-                  <div className="h-100 mb-1 overflow-auto w-100 p-2">
+              <div className="d-flex flex-column align-items-end shadow bg-dark text-light rounded justify-content-center">
+                
+                  <div className="chat p-3 d-flex flex-column overflow-auto">
                     {historyChat.map((chat, index) => {
                       return (
                         <div className="chat-message mb-2 bg-secondary bg-gradient rounded p-1" key={'chat-message' + index}>
@@ -152,25 +148,22 @@ const Homepage = (props) => {
                       );
                     })}
                   </div>
-                  <div className="p-1">
-                    <form onSubmit={(e) => sendMessage(e)}>
-                      <input
-                        type="text"
-                        value={chatMessage}
-                        onChange={(e) => setChatMessage(e)}
-                      />
-                      <input className="btn btn-primary ms-2" name="submitmsg" type="submit" id="submitmsg" value="Send" />
-                    </form>
-                  </div>
-
-                </div>
-
+                    <form onSubmit={(e) => sendMessage(e)} className="p-2">
+                        <div class="input-group">
+                          <input
+                            type="text"
+                            value={chatMessage}
+                            onChange={(e) => setChatMessage(e)}
+                            className="form-control"
+                           />
+                           <button className="btn btn-outline-light" name="submitmsg" type="submit" id="submitmsg" > Send </button>
+                        </div>                      
+                    </form>             
               </div>
             )}
-          </div>
 
         </div>
-      </div>
+    
     </div>
   );
 };
