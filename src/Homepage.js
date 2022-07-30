@@ -51,6 +51,16 @@ const Homepage = (props) => {
     setchatMessage("");
   };
 
+  const leaveGame = (e) => {
+    e.preventDefault(e);
+    socket.emit("message", {
+      method: "exit-game",
+      gameId: gameId,
+    });
+    setGameId(null);
+  };
+
+
   const setChatMessage = (e) => {
     setchatMessage(e.target.value);
   };
@@ -162,6 +172,7 @@ const Homepage = (props) => {
                     <div className="d-flex flex-column p-2 flex-grow-1 text-center">
                       <TicTacToe user={user} socket={socket} gameId={gameId}></TicTacToe>
                       <h2><span className="badge bg-dark">Game ID: {gameId}</span></h2>
+                      <button onClick={(e) => leaveGame(e)} className="btn btn-dark">Leave Game</button>
                     </div>
                   )}
                 </div>
