@@ -19,6 +19,30 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+
+  postman-ci-test:
+    name: Postman CI Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Node on runner
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14'
+
+      - name: Install newman
+        run: |
+          npm install -g newman.    
+          npm install -g newman-reporter-slackmsg
+
+      - name: Run Test
+        run: |
+            newman run https://api.getpostman.com/collections/${{secrets.POSTMAN_COLLECTION}}
+            apikey=${{secrets.POSTMAN_KEY}} \-e https://api.getpostman.com/environments/${{secrets.POSTMAN_ENVIRONMENT}}? apikey=${{secrets.POSTMAN_KEY}}
+            
+            
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
@@ -29,25 +53,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout
         uses: actions/checkout@v2
-        
-      - name: Install newman
-        run: |
-          npm install -g newman
-          npm install -g newman-reporter-htmlextra
-          
-      - name: Make Directory for results
-        run: mkdir -p testResults
-        
-      # Run the POSTMAN collection
-      - name: Run POSTMAN collection
-        run: |
-          newman run Tic-Tac-Toe.postman_collection.json -r htmlextra --reporter-htmlextra-export testResults/htmlreport.html --reporter-htmlextra-darkTheme  > testResults/runreport1.html
-    # Upload the contents of Test Results directory to workspace
-      - name: Output the run Details
-        uses: actions/upload-artifact@v2
-        with:
-          name: RunReports
-          path: testResults
+
 
       # Runs a single command using the runners shell
       - name: Login to Docker Hub
