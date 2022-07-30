@@ -175,7 +175,7 @@ io.on("connection", (socket) => {
                 player1Score: matches[indexMatch].player1Score,
                 player2Score: matches[indexMatch].player2Score,
               });
-            } else {
+            } else if(checkWin(board) === player2Symbol) {
               matches[indexMatch].player2Score++;
               io.to(player1Socket).emit("message", {
                 method: "game-over",
@@ -193,9 +193,15 @@ io.on("connection", (socket) => {
               });
             }
             matches[indexMatch].currentTurn = "over";
-          }
-          if (checkForTie(board)) {
+          }else if (checkForTie(board)) {
             const tieMessage = "It's a tie!";
+            let payload = {
+              gameId,
+              player1Name,
+              player1,
+              player2Name,
+              player2,
+            };
             io.to(player1Socket).emit("message", {
               method: "game-over",
               message: tieMessage,
@@ -331,10 +337,18 @@ io.on("connection", (socket) => {
         matches[indexMatch].player2Name = message.userName;
         matches[indexMatch].player2Socket = socket.id;
         matches[indexMatch].player2Symbol = "o";
+        if(matches[indexMatch].currentTurn === undefined){
+          matches[indexMatch].currentTurn = message.userID;
+        }
         socket.emit("message", {
           method: "game-joined",
           gameId: message.gameId,
           other: matches[indexMatch].player1Name,
+        });
+        socket.emit("message", {
+          method: "move-made",
+          message: "Update",
+          board: matches[indexMatch].board,
         });
         io.to(matches[indexMatch].player1Socket).emit("message", {
           method: "player-joined",

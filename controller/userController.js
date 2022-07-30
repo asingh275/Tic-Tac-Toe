@@ -17,64 +17,95 @@ const firebaseConfig = {
 const app = firebase.initializeApp(firebaseConfig);
 const database = firebaseDB.getDatabase(app);
 
-//Signup
-const writeUserData = async (userId, name, email, imageUrl) => {
-  const userAlreadyinDB = async (userToVerified) => {
-    const userString = "users/" + userToVerified;
-    const snapshot = await firebaseDB.get(
-        firebaseDB.child(firebaseDB.ref(database), userString)
-    );
-    return snapshot.exists();
-  };
-  if (!(await userAlreadyinDB(userId))) {
-    firebaseDB.set(firebaseDB.ref(database, "users/" + userId), {
-      username: name,
-      email: email,
-      profile_picture: imageUrl,
-    }).then(() => {
-        return {
-            status : "Success",
+const addUser = async (req, res, next) => {
+  const { userId, name, email, imageUrl } = req.body;
+  if(userId === undefined || name === undefined || email === undefined || imageUrl === undefined){
+    res.json({
+      message: "Missing required fields",
+      error: "Missing required fields"
+    }).status(400);
+  }else{
+    const userString = "users/" + userId;
+    firebaseDB
+      .get(firebaseDB.child(firebaseDB.ref(database), userString))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          res
+            .json({
+              message: "User already exists",
+            })
+            .status(409);
+        } else {
+          firebaseDB
+            .set(firebaseDB.ref(database, "users/" + userId), {
+              username: name,
+              email: email,
+              profile_picture: imageUrl,
+            })
+            .then(() => {
+              res
+                .set("content-location", `/api/v1/user/${userId}`)
+                .json({
+                  url: `/api/v1/match/${userId}`,
+                  data: {
+                    userId,
+                    name,
+                    email,
+                    imageUrl,
+                  },
+                })
+                .status(201);
+            })
+            .catch((error) => {
+              res
+                .json({
+                  message: "Encounter an error while adding user",
+                  error: error,
+                })
+                .status(500);
+            });
         }
-    }).catch((error) => {
-        return {
-            status : "Failed",
-        }
-    });
-  } else {
-    return {
-        status : "User already exists",
-    }
+      })
+      .catch((error) => {
+        res
+          .json({
+            message: "Encounter an error while checking if user already exists",
+            error: error,
+          })
+          .status(500);
+      });
   }
 };
 
-const addUser = async (req, res, next) => {
-  const { userId, name, email, imageUrl } = req.body;
-  await writeUserData(userId, name, email, imageUrl);
-};
-
 const getUserById = async (req, res, next) => {
-    const {userID} = req.params;
-    const userString = `users/${userID}`;
-    firebaseDB.get(
-        firebaseDB.child(firebaseDB.ref(database), userString)
-    ).then((snapshot) => {
-        let user = snapshot.exportVal();
-        let location = `/api/v1/user/${userID}`;
-        if(user === null){
-            user = {};
-            location = `/api/v1/user/`;
-        }
-        res.set('content-location',`${location}`).json({
-            url:  `${location}`,
-            data: user
-        }).status(201)
-    }).catch((error) => {
-        res.json({
-            message: "Encounter an error while fetching user",
-            error: error
-        }).status(500)
+  const { userID } = req.params;
+  const userString = `users/${userID}`;
+  firebaseDB
+    .get(firebaseDB.child(firebaseDB.ref(database), userString))
+    .then((snapshot) => {
+      let user = snapshot.exportVal();
+      let location = `/api/v1/user/${userID}`;
+      if (user === null) {
+        user = {};
+        location = `/api/v1/user/`;
+      }
+      res
+        .set("content-location", `${location}`)
+        .json({
+          url: `${location}`,
+          data: user,
+        })
+        .status(201);
+    })
+    .catch((error) => {
+      res
+        .json({
+          message: "Encounter an error while fetching user",
+          error: error,
+        })
+        .status(500);
     });
 };
 
-
 module.exports = { addUser, getUserById };
+

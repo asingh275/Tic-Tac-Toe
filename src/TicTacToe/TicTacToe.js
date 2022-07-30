@@ -8,6 +8,7 @@ const TicTacToe = (props) => {
       <div className="container">
         <h1>Tic Tac Toe</h1>
         <Board
+          setEmailMessage={props.setEmailMessage}
           socket={props.socket}
           user={props.user}
           gameId={props.gameId}
