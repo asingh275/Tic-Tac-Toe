@@ -67,14 +67,6 @@ Message event is used to send all messages related to the functioning of the in 
 
 The `create-game` method is a client message to the server containing a player request to create a new game.  
 The arguments expected by the server are as follows:
-```javascript
-{
-    player: {
-        name: "player-name",
-        id: "player-id"
-    }
-}
-```
 
 ```javascript 
 {
