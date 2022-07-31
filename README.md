@@ -416,7 +416,7 @@ Expected result
 }
 ```
 
-If the are not match in the database it will retrieve a empty array ```javascript []```.
+If the are not match in the database it will retrieve a empty array `[]`.
 
 #### Get match by id
 
@@ -440,7 +440,7 @@ Expected result
     }
 }
 ```
-If the match is not found it will return an empty object. ```javascript {} ``` 
+If the match is not found it will return an empty object. `{}` 
 
 #### Add new match to database
 
@@ -484,7 +484,7 @@ Expected result
 }
 ```
 
-If the user is not found it will return an empty object. ```javascript {} ```
+If the user is not found it will return an empty object. `{}`
 
 #### Add new user to database
 
