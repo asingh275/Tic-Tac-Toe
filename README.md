@@ -40,25 +40,134 @@ https://cpsc2650-tic-tac-toe.herokuapp.com/
     
 ### HTTP Server Structure
 
+The HTTP server was built using the [Express](https://expressjs.com/) framework. It serves the user interface of the application through the endpoint `https://cpsc2650-tic-tac-toe.herokuapp.com/`.
+
 ### WS Server Structure
+
+The web socket server was build using the library [socket.io](https://socket.io/). 
 
 ### WS Events
 
 #### message event
 
+Message event is used to send all messages related to the functioning of the in session game. All messages will containt a method attribute which will be used to identify the type of action it should trigger.
+
+```javascript 
+{
+    method: "method-name",
+    ...arguments
+}
+```  
+
 ##### Method types
 
+**These are the different methods that the server side will be listening for:**
+
 - create-game
+
+The `create-game` method is a client message to the server containing a player request to create a new game.  
+The arguments expected by the server are as follows:
+```javascript
+{
+    player: {
+        name: "player-name",
+        id: "player-id"
+    }
+}
+```
+
+```javascript 
+{
+    method: "create-game",
+    userID: user.uid,
+   userName: user.displayName,
+}
+```  
+
 - reset-game
+
+The `reset-game` method is a client message to the server containing a player request for resetting the board game. It is expected to hold the id game.  
+The arguments expected by the server are as follows:
+
+```javascript 
+{
+      method: "reset-game",
+      gameId: gameId,
+}
+```  
+
 - join-game
+
+The `join-game` method is a client message to the server containing a player request for exiting a game, it is expected to contain the information of the player joining the game.  
+The arguments expected by the server are as follows:
+
+```javascript 
+{
+    method: "join-game",
+    userID: user.uid,
+    userName: user.displayName,
+    gameId: gameIdForm,
+}
+``` 
+
 - exit-game
+
+The `exit-game` method is a client message to the server containing a player request for exiting a game, it is expectec to contain the information of player leaving the game.  
+The arguments expected by the server are as follows:
+
+```javascript 
+{
+    method: "join-game",
+    userID: user.uid,
+    userName: user.displayName,
+    gameId: gameIdForm,
+}
+``` 
+
 - make-move
+
+The `make-game` method is a client message to the server containing a player's request for making a move in a game, it is expected to contain the information of the player, game id, and the selected move.  
+The arguments expected by the server are as follows:
+
+```javascript 
+{
+      method: "make-move",
+      gameId: gameId,
+      userID: user.uid,
+      position: square,
+    }
+``` 
 
 #### message-chat event
 
+Message event is used to send all messages related to the functioning of the in session chat. All messages will containt a method attribute which will be used to identify the type of action it should trigger.
+
+```javascript 
+{
+    method: "method-name",
+}
+```  
+
 ##### Method types
 
+**These are the different methods that the server side will be listening for:**
+
 - send-message
+
+The `send-message` method is a client request to the server for sending a message to the chat of player in a session, it is expected to contain the information of the player, game id, and the selected move.  
+The arguments expected by the server are as follows:
+
+```javascript
+{
+    method: "send-message",
+    userID: user.uid,
+    userName: user.displayName,
+    gameId: gameId,
+    messageContent: chatMessage,
+    date: "Tue Aug 19 1975 23:15:30 GMT-0700",
+}
+```
+
 
 ## Tic Tac Toe App - Client Side
 
@@ -66,8 +175,11 @@ https://cpsc2650-tic-tac-toe.herokuapp.com/
 
 #### message event
 
+Message event is used to send all messages related to the functioning of the game.
+
 #### Method types
-**These are the events that the client side will be listening for:**
+
+**These are the different methods that the client side will be listening for:**
 
 - game-created  
 
@@ -102,7 +214,6 @@ let game = {
 };
 ```  
 After that the client will update the board information accordingly and set the game ID state.  
-<br><br>
 
 - game-reset  
 
@@ -119,8 +230,6 @@ The response body expected by the client is as follows:
   
 After that the client will update the board information accordingly.  
 
-<br><br>
-
 - game-joined 
 
 `game-joined` event is a server response when a player joins a game.  
@@ -136,8 +245,6 @@ The response body expected by the client is as follows:
 In this case, other can be undefined if the player was the first one to join a game and is currently waiting for a opponent to join.  
 After that the client will update the player cards information accordingly and set the gameID state.  
 
-<br><br>
-
 - game-over-error
 
 `game-over-error` event is a server response when a player makes a move when the game is already over.  
@@ -150,8 +257,6 @@ The response body expected by the client is as follows:
 }
 ```  
 After that the client will update the error message with the message sent by the server ("Game is over").  
-
-<br><br>
 
 - invalid-turn  
 
@@ -166,7 +271,6 @@ The response body expected by the client is as follows:
 }
 ```  
 After that the client updates the error message with the message sent by the server ("It's not your turn").  
-<br><br>
 
 - invalid-position  
 
@@ -181,9 +285,6 @@ The response body expected by the client is as follows:
 }
 ```  
 After that the client updates the error message with the message sent by the server ("Position already taken").  
-
-<br><br>
-  
 
 - game-over  
 
@@ -212,11 +313,10 @@ let payload = {
 };
 ```
 After that the client:
-- Updates the game status message ("You win" or "You Lose") with the message sent by the server. 
-- Updates the players scoreboard.
-- Posts the match information to the database  
+-- Updates the game status message ("You win" or "You Lose") with the message sent by the server. 
+-- Updates the players scoreboard.
+-- Posts the match information to the database  
 
-<br><br>
 - move-made
 
 `move-made` event is a server response when a player makes an allowed move.  
@@ -233,8 +333,6 @@ The response body expected by the client is as follows:
 ```  
 After that the client will update the board and update players scores if there was any change.  
 
-<br><br>
-
 - game-not-found  
 
 `game-not-found` event is a server response when a player tries to join a game with an nonexistent game ID.  
@@ -248,8 +346,6 @@ The response body expected by the client is as follows:
 ```  
 After that the client will update the error message with the message sent by the server ("Game not found").  
 
-<br><br>
-
 - match-full
 
 `game-not-found` event is a server response when a player tries to join a game that already have 2 players connected.  
@@ -262,8 +358,6 @@ The response body expected by the client is as follows:
 }
 ```  
 After that the client will update the error message with the message sent by the server ("Match is full").  
-
-<br><br>
 
 {
           method: "player-joined",
@@ -281,9 +375,7 @@ The response body expected by the client is as follows:
     message: message.userName,
 }
 ```  
-After that the client will set the opponent information to message.userName and update player cards accordingly.  
-<br><br>  
-
+After that the client will set the opponent information to message.userName and update player cards accordingly.   
 
 #### message-chat event
 
@@ -302,17 +394,20 @@ The response body expected by the client is as follows:
 ```  
 After that the client will update the chat messages by using the historyChat (that contains all messages sent).  
 Messages are also sent when a player joins a game, informing that an user has connected to that game room.  
-<br><br>  
 
 ## Tic Tac Toe API
 
 ### How to make API request
+
+All request to our Tic Tac Toe API should be made using the following base url:
 
 `BaseURL`: `https://cpsc2650-tic-tac-toe.herokuapp.com/api/v1/`
 
 ### Match Endpoint
 
 #### Get all matches
+
+The endpoint for getting all matches is:
 
 `GET`: `/api/v1/match`
 
@@ -329,7 +424,11 @@ Expected result
 }
 ```
 
+If the are not match in the database it will retrieve a empty array ```javascript []```.
+
 #### Get match by id
+
+The endpoint for getting a match by id is:
 
 `GET`: `/api/v1/match/id`
 
@@ -349,8 +448,11 @@ Expected result
     }
 }
 ```
+If the match is not found it will return an empty object. ```javascript {} ``` 
 
 #### Add new match to database
+
+The endpoint for adding a new match to the database is:
 
 `POST`: `/api/v1/match`
 
@@ -373,6 +475,8 @@ Expected body
 
 #### Get user by id
 
+The endpoint for getting a user by id is:
+
 `GET`: `/api/v1/user/id`
 
 Expected result
@@ -388,7 +492,11 @@ Expected result
 }
 ```
 
+If the user is not found it will return an empty object. ```javascript {} ```
+
 #### Add new user to database
+
+the endpoint for adding a new user to the database is:
 
 `POST`: `/api/v1/user`
 
@@ -418,6 +526,8 @@ Expected result
 ```
 
 ### Email Endpoint
+
+The endpoint for sending an email with game information is:
 
 `POST`: `/api/v1/email`
 
